@@ -1,46 +1,68 @@
 package com.sf.banbanle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.basesmartframe.baseui.BaseActivity;
-import com.basesmartframe.request.SFHttpGsonHandler;
-import com.maxleap.im.DataHandler;
-import com.maxleap.im.MLParrot;
-import com.maxleap.im.ParrotException;
-import com.maxleap.im.SimpleDataHandler;
-import com.maxleap.im.entity.FriendInfo;
-import com.maxleap.im.entity.Message;
-import com.maxleap.im.entity.MessageBuilder;
-import com.nostra13.universalimageloader.utils.L;
+import com.maxleap.MLDataManager;
+import com.maxleap.MLObject;
+import com.maxleap.SaveCallback;
+import com.maxleap.exception.MLException;
+import com.sf.banbanle.bean.BaiduSingleDevicePushBean;
+import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.bean.UserInfoBean;
+import com.sf.banbanle.config.GlobalInfo;
+import com.sf.banbanle.http.BDPushHandler;
 import com.sf.banbanle.http.HttpUrl;
+import com.sf.banbanle.http.SFBDPushRequest;
+import com.sf.banbanle.user.ActivityFriendsList;
 import com.sf.httpclient.core.AjaxParams;
 import com.sf.httpclient.newcore.MethodType;
 import com.sf.httpclient.newcore.SFHttpStringCallback;
 import com.sf.httpclient.newcore.SFRequest;
-import com.sf.utils.baseutil.Md5Utils;
+import com.sf.loglib.L;
 import com.sf.utils.baseutil.SFToast;
 import com.sflib.CustomView.baseview.EditTextClearDroidView;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Iterator;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by NetEase on 2016/12/1 0001.
  */
 
 public class ActivityEditContent extends BaseActivity {
-    private EditTextClearDroidView mContent;
+    private EditTextClearDroidView mContent, mTitle;
+    private TextView mUserListTv;
+    private Button mAddUserBt;
+    public final int ADD_USER_REQUEST = 1010;
+    private List<UserInfoBean> mUserList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
         mContent = (EditTextClearDroidView) findViewById(R.id.edit_content);
+        mTitle = (EditTextClearDroidView) findViewById(R.id.edit_title);
+        mUserListTv = (TextView) findViewById(R.id.user_list_tv);
+        mAddUserBt = (Button) findViewById(R.id.add_user_bt);
+        mAddUserBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityEditContent.this, ActivityFriendsList.class);
+                startActivityForResult(intent, ADD_USER_REQUEST);
+            }
+        });
     }
 
     @Override
@@ -54,115 +76,141 @@ public class ActivityEditContent extends BaseActivity {
         int id = item.getItemId();
         switch (id) {
             case 0:
-                getFriendInfo("584017657e2c790007e57b19");
+                if (TextUtils.isEmpty(mTitle.getEditText().getText())) {
+                    SFToast.showToast(R.string.task_title_tips);
+                    return true;
+                }
+                if (TextUtils.isEmpty(mContent.getEditText().getText())) {
+                    SFToast.showToast(R.string.task_content_tips);
+                    return true;
+                }
+
+                String title = mTitle.getEditText().getText().toString();
+                String content = mContent.getEditText().getText().toString();
+                addTask(title, content, mUserList);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void doSendInfo(String clientId) {
-        if (TextUtils.isEmpty(mContent.getEditText().getText())) {
-            SFToast.showToast(R.string.edit_content_tip);
-            return;
+    private void addTask(final String title, final String content, List<UserInfoBean> userInfoBeen) {
+        final List<MLObject> tasks = new ArrayList<>();
+        LoginInfo loginInfo = GlobalInfo.getInstance().mLoginInfo.getValue();
+        final MLObject myTask = getTask(title, content, loginInfo.userName, true);
+        tasks.add(myTask);
+        for (UserInfoBean been : userInfoBeen) {
+            MLObject otherTask = getTask(title, content, been.getUserName(), false);
+            tasks.add(otherTask);
         }
-        String content = mContent.getEditText().getText().toString();
-        sendInfo(clientId, content);
-    }
-
-    private void addFriend(String clientId) {
-        MLParrot.getInstance().addFriend(clientId, new DataHandler<Void>() {
+        MLDataManager.saveAllInBackground(tasks, new SaveCallback() {
             @Override
-            public void onSuccess(Void aVoid) {
-                L.i(TAG, "addFriend,onSuccess");
-
-            }
-
-            @Override
-            public void onError(ParrotException e) {
-                L.i(TAG, "addFriend,onError: " + e);
+            public void done(MLException e) {
+                if (e == null) {
+                    SFToast.showToast(R.string.add_task_success);
+                    pushToBatchDevice(mUserList,title,content,"");
+                } else {
+                    SFToast.showToast(R.string.add_task_fail);
+                    L.error(TAG, "addTask exception: " + e);
+                }
             }
         });
     }
 
-    private void getFriendInfo(final String clientId) {
-        MLParrot.getInstance().getFriendInfo(clientId, new DataHandler<FriendInfo>() {
-            @Override
-            public void onSuccess(FriendInfo friendInfo) {
-                L.i(TAG, "getFriendInfo friendInfo: " + friendInfo.toString());
-            }
 
-            @Override
-            public void onError(ParrotException e) {
-                L.i(TAG, "getFriendInfo exception : " + e);
-                addFriend(clientId);
-            }
-        });
-    }
-
-    private void sendInfo(String clientId, String message) {
-        Message msg = MessageBuilder.newBuilder()
-                .to(clientId, true)   // 目标对象的 ClientId
-                .text(message);
-        MLParrot.getInstance().sendMessage(msg, new SimpleDataHandler<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                L.e(TAG, "sendInfo onSuccess");
-                finish();
-            }
-
-        });
-    }
-
-    private String constructMd5(String url, AjaxParams params) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("POST").append(url);
-        if (params != null) {
-            Map<String, String> contentMap = params.getUrlParams();
-            Iterator<Map.Entry<String, String>> entrySet = contentMap.entrySet().iterator();
-            while (entrySet.hasNext()) {
-                Map.Entry<String, String> entry = entrySet.next();
-                builder.append(entry.getKey()).append("=").append(entry.getValue());
-            }
+    private MLObject getTask(String title, String content, String userName, boolean fromMe) {
+        MLObject task = new MLObject("Task");
+        task.put("userName", userName);
+        task.put("title", title);
+        task.put("content", content);
+        if (fromMe) {
+            task.put("type", 0);
+        } else {
+            task.put("type", 1);
         }
-        builder.append(BanBanLeApp.BAIDU_PUSH_SECRET_KEY);
-        try {
-            String encodeContent = URLEncoder.encode(builder.toString(), "utf-8");
-            return Md5Utils.getMD5(encodeContent);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
+        UserInfoBean userInfoBean=GlobalInfo.getInstance().mInfoBean.getValue();
+        task.put("url",userInfoBean.getUrl());
+        return task;
     }
 
-    private void sendSingleDevice() {
+
+    private void pushToBatchDevice(List<UserInfoBean> infoBeanList,String title,String content,String taskId) {
         AjaxParams ajaxParams = new AjaxParams();
-        ajaxParams.put("apikey", BanBanLeApp.BAIDU_PUSH_APP_KEY);
-        ajaxParams.put("timestamp", System.currentTimeMillis() + "");
-        ajaxParams.put("device_type", "android");
-        ajaxParams.put("sign", constructMd5(HttpUrl.PUSH_SINGLE_DEVICE, ajaxParams));
-        SFRequest _request = new SFRequest(HttpUrl.PUSH_SINGLE_DEVICE, MethodType.POST) {
+        ajaxParams.put("device_type", "3");
+        ajaxParams.put("msg_type", "1");
+
+//        BaiduPushInfo pushInfo = GlobalInfo.getInstance().mPushInfo.getValue();
+//        if (pushInfo != null) {
+//            ajaxParams.put("channel_id", "4500265865066869730");
+//            BaiduPushBean pushBean = new BaiduPushBean();
+//            pushBean.setTitle("hello");
+//            pushBean.setDescription("description");
+//            Gson gson = new Gson();
+//            ajaxParams.put("msg", gson.toJson(pushBean));
+//        }
+
+        JSONObject notification = new JSONObject();
+        try {
+//            JSONObject jsonChanneId = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            for (UserInfoBean infoBean : infoBeanList) {
+                jsonArray.put(Long.valueOf(infoBean.getChannelId()));
+            }
+            ajaxParams.put("channel_ids", jsonArray.toString());
+
+            notification.put("title", title);
+            notification.put("description", content);
+            notification.put("notification_builder_id", 0);
+            notification.put("notification_basic_style", 7);
+            notification.put("open_type", 1);
+            notification.put("url", "http://push.baidu.com");
+            JSONObject jsonCustormCont = new JSONObject();
+            jsonCustormCont.put("taskId", taskId); //自定义内容，key-value
+            notification.put("custom_content", jsonCustormCont);
+        } catch (Exception e) {
+            L.error(TAG, "pushToSingleDevice exception: " + e);
+        }
+        ajaxParams.put("msg", notification.toString());
+        SFBDPushRequest _request = new SFBDPushRequest(HttpUrl.PUSH_BATCH_DEVICE, MethodType.POST, ajaxParams) {
             @Override
             public Class getClassType() {
-                return Student.class;
+                return BaiduSingleDevicePushBean.class;
             }
 
         };
-        SFHttpGsonHandler sfHttpGsonHandler = new SFHttpGsonHandler(_request, new SFHttpStringCallback<Student>() {
+        BDPushHandler pushHandler = new BDPushHandler(_request, new SFHttpStringCallback<BaiduSingleDevicePushBean>() {
 
             @Override
-            public void onSuccess(SFRequest sfRequest, Student student) {
-
+            public void onSuccess(SFRequest sfRequest, BaiduSingleDevicePushBean pushBean) {
+                L.info(TAG, "pushToSingleDevice,onsuccess: " + pushBean);
             }
 
             @Override
             public void onFailed(SFRequest sfRequest, Exception e) {
-
+                L.error(TAG, "pushToSingleDevice,onfailed: " + e);
             }
         });
-        sfHttpGsonHandler.start();
+        pushHandler.start();
     }
 
-    class Student {
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_USER_REQUEST && resultCode == RESULT_OK) {
+            if (data != null) {
+                List<UserInfoBean> userInfoBeanList = (List<UserInfoBean>) data.getSerializableExtra(ActivityFriendsList.SELECTED_USER_INFO);
+                mUserList.clear();
+                mUserList.addAll(userInfoBeanList);
+                mUserListTv.setText(constructUserList());
+            }
+        }
+    }
+
+    private String constructUserList() {
+        StringBuilder builder = new StringBuilder();
+        for (UserInfoBean infoBean : mUserList) {
+            builder.append(infoBean.getUserName()).append(";");
+        }
+        return builder.toString();
     }
 }

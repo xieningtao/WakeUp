@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+
+    <com.basesmartframe.bitmap.rounddrawable.RoundedImageView
+        android:id="@+id/photo_iv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/circle_frame"
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/app_icon"
+        app:riv_corner_radius="50dp" />
+
+    <TextView
+        android:id="@+id/title_label_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:layout_below="@id/photo_iv"
+        android:layout_marginTop="12dp"
+        android:text="@string/title" />
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/title_label_tv"
+        android:layout_alignTop="@id/title_label_tv"
+        android:layout_alignBottom="@id/title_label_tv"
+        android:layout_marginTop="8dp"
+        android:singleLine="true"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/content_label_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_tv"
+        android:layout_marginTop="12dp"
+        android:text="@string/content" />
+
+    <TextView
+        android:id="@+id/content_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/content_label_tv"
+        android:layout_marginTop="8dp"
+        android:minHeight="80dp"
+        android:padding="4dp" />
+</RelativeLayout>

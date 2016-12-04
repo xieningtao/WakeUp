@@ -141,7 +141,7 @@
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
+            android:theme="@android:style/Theme.Holo.NoActionBar"
             />
         <activity
             android:name=".ActivityEditContent"
@@ -150,6 +150,28 @@
             />
         <activity
             android:name=".ActivityHome"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo"
+            />
+
+        <activity
+            android:name=".user.ActivityFriendsList"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo"
+            />
+
+        <activity
+            android:name=".user.ActivityAddUser"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo"
+            />
+        <activity
+            android:name=".user.ActivityProfile"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo"
+            />
+        <activity
+            android:name=".task.ActivityTaskDetail"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo"
             />

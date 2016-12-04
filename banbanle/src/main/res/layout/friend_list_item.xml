@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.basesmartframe.baseadapter.checkableadapter.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <com.basesmartframe.bitmap.rounddrawable.RoundedImageView
         android:id="@+id/photo_iv"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/app_icon"
-        android:scaleType="center"
         android:background="@drawable/circle_frame"
-        android:padding="2dp"
+        android:scaleType="center"
         app:riv_corner_radius="25dp"
-        app:riv_oval="true"
+        android:padding="2dp"
         />
 
     <TextView
-        android:id="@+id/title_tv"
+        android:id="@+id/nickName_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/photo_iv"
@@ -27,11 +25,11 @@
         />
 
     <TextView
-        android:id="@+id/content_tv"
+        android:id="@+id/userName_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/photo_iv"
         android:layout_marginLeft="12dp"
         android:layout_alignBottom="@id/photo_iv"
         />
-</RelativeLayout>
+</com.basesmartframe.baseadapter.checkableadapter.CheckableRelativeLayout>

@@ -6,12 +6,18 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.basesmartframe.baseui.BaseActivity;
+import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.config.BBLConstant;
+import com.sf.banbanle.config.GlobalInfo;
+import com.sf.banbanle.user.ActivityProfile;
 import com.sf.utils.baseutil.SFManifestUtil;
 
 /**
@@ -31,7 +37,7 @@ public class ActivityHome extends BaseActivity {
                 startActivity(intent);
             }
         });
-
+        GlobalInfo.getInstance().mLoginInfo.restoreData(BBLConstant.LOGIN_INFO, LoginInfo.class);
         PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,
                 SFManifestUtil.getMetaValue(this, "api_key"));
         Resources resource = this.getResources();
@@ -53,4 +59,16 @@ public class ActivityHome extends BaseActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.user,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent=new Intent(this, ActivityProfile.class);
+        startActivity(intent);
+        return super.onOptionsItemSelected(item);
+    }
 }

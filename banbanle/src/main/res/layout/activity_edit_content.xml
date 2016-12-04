@@ -3,8 +3,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/user_fl"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        >
+
+        <Button
+            android:id="@+id/add_user_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/baby_medical_login_bt"
+            android:layout_alignParentRight="true"
+            android:text="@string/add_user"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/user_list_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/add_user_bt"
+            android:textSize="12sp"
+            android:background="@drawable/baby_medical_input_et"
+            />
+
+        </RelativeLayout>
+
+
+    <com.sflib.CustomView.baseview.EditTextClearDroidView
+        android:id="@+id/edit_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/user_fl"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/baby_medical_input_et"
+
+        />
     <com.sflib.CustomView.baseview.EditTextClearDroidView
         android:id="@+id/edit_content"
+        android:layout_below="@id/edit_title"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginLeft="20dp"

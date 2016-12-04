@@ -11,11 +11,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.basesmartframe.baseui.BaseActivity;
+import com.maxleap.GetCallback;
 import com.maxleap.LogInCallback;
+import com.maxleap.MLObject;
+import com.maxleap.MLQuery;
+import com.maxleap.MLQueryManager;
 import com.maxleap.MLUser;
 import com.maxleap.MLUserManager;
 import com.maxleap.exception.MLException;
+import com.maxleap.im.entity.StrangerInfo;
 import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.bean.UserInfoBean;
 import com.sf.banbanle.config.BBLConstant;
 import com.sf.banbanle.config.GlobalInfo;
 import com.sf.loglib.L;
@@ -91,9 +97,7 @@ public class LoginActivity extends BaseActivity {
                     SFToast.showToast(R.string.login_success_tip);
                     LoginInfo loginInfo = new LoginInfo(userName, pwd);
                     GlobalInfo.getInstance().mLoginInfo.setValue(loginInfo, BBLConstant.LOGIN_INFO);
-                    Intent intent = new Intent(LoginActivity.this, ActivityHome.class);
-                    startActivity(intent);
-                    finish();
+                    getUserInfo(userName);
                 } else {
                     // 登录失败
                     SFToast.showToast(R.string.login_fail_tip);
@@ -103,6 +107,29 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
+    private void getUserInfo(final String userName) {
+        MLQuery mlQuery = new MLQuery("UserInfo");
+        mlQuery.whereEqualTo("userName", userName);
+        MLQueryManager.getFirstInBackground(mlQuery, new GetCallback() {
+            @Override
+            public void done(MLObject mlObject, MLException e) {
+                if (e == null && mlObject != null) {
+                    String url = mlObject.getString("url");
+                    String nickName = mlObject.getString("nickName");
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUserName(userName);
+                    userInfoBean.setUrl(url);
+                    userInfoBean.setNickName(nickName);
+                    GlobalInfo.getInstance().mInfoBean.setValue(userInfoBean);
+                    Intent intent = new Intent(LoginActivity.this, ActivityHome.class);
+                    startActivity(intent);
+                    finish();
+                }else {
+                    SFToast.showToast(R.string.fail_to_get_user_info);
+                }
+            }
+        });
+    }
 
     private TextWatcher mTextWatcher = new TextWatcher() {
         @Override

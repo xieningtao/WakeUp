@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <Button
+        android:id="@+id/add_user_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_user"
+        android:background="@drawable/baby_medical_login_bt"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/white"
+        />
+
+    <com.sflib.CustomView.baseview.EditTextClearDroidView
+        android:id="@+id/phoneNum_atv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/baby_medical_input_et"
+        android:layout_toLeftOf="@id/add_user_bt"
+        android:layout_alignTop="@id/add_user_bt"
+        android:layout_alignBottom="@id/add_user_bt"
+        />
+
+</RelativeLayout>

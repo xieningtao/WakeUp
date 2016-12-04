@@ -9,12 +9,23 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.baidu.android.pushservice.PushMessageReceiver;
+import com.maxleap.GetCallback;
+import com.maxleap.MLDataManager;
+import com.maxleap.MLObject;
+import com.maxleap.MLQuery;
+import com.maxleap.MLQueryManager;
+import com.maxleap.SaveCallback;
+import com.maxleap.exception.MLException;
+import com.sf.banbanle.bean.BaiduPushInfo;
+import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.config.GlobalInfo;
 import com.sf.loglib.L;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.TransferQueue;
 
 /*
  * Push消息处理receiver。请编写您需要的回调函数， 一般来说： onBind是必须的，用来处理startWork返回值；
@@ -68,11 +79,72 @@ public class BBLMessageReceiver extends PushMessageReceiver {
 
         if (errorCode == 0) {
             // 绑定成功
+            BaiduPushInfo info = new BaiduPushInfo(userId, channelId);
+            GlobalInfo.getInstance().mPushInfo.setValue(info);
+            addOrUpdateChannelId(channelId, userId);
             Log.d(TAG, "绑定成功");
+        } else {
+            GlobalInfo.getInstance().mPushInfo.setValue(null);
         }
         // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
         updateContent(context, responseString);
+
     }
+
+    private void addOrUpdateChannelId(final String channelId, final String userId) {
+        MLQuery chatUserQuery = MLQuery.getQuery("UserInfo");
+        final LoginInfo loginInfo = GlobalInfo.getInstance().mLoginInfo.getValue();
+        if (loginInfo != null) {
+            chatUserQuery.whereEqualTo("userName", loginInfo.userName);
+            MLQueryManager.getFirstInBackground(chatUserQuery, new GetCallback() {
+                @Override
+                public void done(MLObject mlObject, MLException e) {
+                    if (e == null && mlObject != null) {
+                        String channel_id = mlObject.getString("channelId");
+                        String user_id = mlObject.getString("userId");
+                        if (!channelId.equals(channel_id) || !userId.equals(user_id)) {
+                            mlObject.put("channelId", channelId);
+                            mlObject.put("userId", userId);
+                            saveChannelId(mlObject);
+                        }
+
+                    } else {
+                        if (MLException.OBJECT_NOT_FOUND == e.getCode()) {
+                            MLObject chatUser = new MLObject("UserInfo");
+                            chatUser.put("channelId", channelId);
+                            chatUser.put("userId", userId);
+                            chatUser.put("userName",loginInfo.userName);
+                            saveChannelId(chatUser);
+                        } else {
+                            L.error(TAG, "addOrUpdateChannelId,exception: " + e);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private void updateChannelId(MLObject chatUser){
+        MLDataManager.fetchInBackground(chatUser, new GetCallback<MLObject>() {
+            @Override
+            public void done(MLObject mlObject, MLException e) {
+                L.info(TAG,"saveChannelId exception: "+e);
+            }
+        });
+    }
+    private void saveChannelId(MLObject chatUser) {
+        MLDataManager.saveInBackground(chatUser,    new SaveCallback() {
+            @Override
+            public void done(MLException e) {
+                if (e == null) {
+                    L.info(TAG, "saveChannelId success");
+                } else {
+                    L.error(TAG, "saveChannelId exception: " + e);
+                }
+            }
+        });
+    }
+
 
     /**
      * 接收透传消息的函数。
@@ -159,23 +231,6 @@ public class BBLMessageReceiver extends PushMessageReceiver {
                 + description + "\" customContent=" + customContentString;
         Log.d(TAG, notifyString);
 
-        // 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
-        if (!TextUtils.isEmpty(customContentString)) {
-            JSONObject customJson = null;
-            try {
-                customJson = new JSONObject(customContentString);
-                String myvalue = null;
-                if (!customJson.isNull("mykey")) {
-                    myvalue = customJson.getString("mykey");
-                }
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-        // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-        updateContent(context, notifyString);
     }
 
     /**

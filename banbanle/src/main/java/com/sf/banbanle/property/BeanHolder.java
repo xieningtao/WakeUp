@@ -57,4 +57,9 @@ public class BeanHolder<T> {
     synchronized public T getValue(String tag, Class<T> myClass) {
         return GsonUtil.parse(SpHelper.getStr("new" + tag, ""), myClass);
     }
+
+    synchronized public void restoreData(String tag,Class<T> myClass){
+        mNewData=GsonUtil.parse(SpHelper.getStr("new" + tag, ""), myClass);
+        mOldData=GsonUtil.parse(SpHelper.getStr("old" + tag, ""), myClass);
+    }
 }
