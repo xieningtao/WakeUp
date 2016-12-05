@@ -12,6 +12,15 @@ public class TaskBean {
     private String content;
     private String url;
     private String id;
+    private String nickName;
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
     public String getId() {
         return id;

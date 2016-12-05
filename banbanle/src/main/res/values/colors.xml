@@ -6,4 +6,7 @@
 
     <color name="ny_main_bg">#ffefefee</color>
     <color name="lb_grey">#888888</color>
+
+    <color name="txt_main_color">#5d5d5d</color>
+    <color name="txt_main_hint_color">#aaaaaa</color>
 </resources>

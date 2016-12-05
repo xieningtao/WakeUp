@@ -19,7 +19,6 @@ import com.maxleap.MLQueryManager;
 import com.maxleap.MLUser;
 import com.maxleap.MLUserManager;
 import com.maxleap.exception.MLException;
-import com.maxleap.im.entity.StrangerInfo;
 import com.sf.banbanle.bean.LoginInfo;
 import com.sf.banbanle.bean.UserInfoBean;
 import com.sf.banbanle.config.BBLConstant;
@@ -120,11 +119,12 @@ public class LoginActivity extends BaseActivity {
                     userInfoBean.setUserName(userName);
                     userInfoBean.setUrl(url);
                     userInfoBean.setNickName(nickName);
+                    userInfoBean.setObjectId(mlObject.getObjectId());
                     GlobalInfo.getInstance().mInfoBean.setValue(userInfoBean);
                     Intent intent = new Intent(LoginActivity.this, ActivityHome.class);
                     startActivity(intent);
                     finish();
-                }else {
+                } else {
                     SFToast.showToast(R.string.fail_to_get_user_info);
                 }
             }

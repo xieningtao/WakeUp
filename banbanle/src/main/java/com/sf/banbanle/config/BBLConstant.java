@@ -7,4 +7,9 @@ package com.sf.banbanle.config;
 public interface BBLConstant {
 
     String LOGIN_INFO = "login_info";
+
+    String DENY = "deny";
+    String ACCEPT = "accept";
+    String FINISH = "finish";
+    String IDLE = "idle";
 }

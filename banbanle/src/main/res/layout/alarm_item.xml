@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="8dp">
 
-    <com.basesmartframe.bitmap.rounddrawable.RoundedImageView
-        android:id="@+id/photo_iv"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/app_icon"
-        android:scaleType="center"
-        android:background="@drawable/circle_frame"
-        android:padding="2dp"
-        app:riv_corner_radius="25dp"
-        app:riv_oval="true"
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        >
 
-    <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/photo_iv"
-        android:layout_marginLeft="12dp"
-        android:layout_alignTop="@id/photo_iv"
-        />
+        <com.basesmartframe.bitmap.rounddrawable.RoundedImageView
+            android:id="@+id/photo_iv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/circle_frame"
+            android:padding="2dp"
+            android:scaleType="center"
+            android:src="@drawable/app_icon"
+            app:riv_corner_radius="25dp"
+            app:riv_oval="true"
+            />
 
-    <TextView
-        android:id="@+id/content_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/photo_iv"
-        android:layout_marginLeft="12dp"
-        android:layout_alignBottom="@id/photo_iv"
-        />
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/photo_iv"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@id/photo_iv"
+            />
+
+        <TextView
+            android:id="@+id/content_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/photo_iv"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@id/photo_iv"
+            />
+    </RelativeLayout>
 </RelativeLayout>

@@ -1,14 +1,19 @@
 package com.sf.banbanle;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.Notification;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.android.pushservice.PushConstants;
@@ -25,6 +30,8 @@ import com.sf.utils.baseutil.SFManifestUtil;
  */
 
 public class ActivityHome extends BaseActivity {
+    private ViewPager mViewPager;
+    private Button mCreateTaskBt, mAcceptTaskBt, mAssingMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,51 @@ public class ActivityHome extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityHome.this, ActivityEditContent.class);
                 startActivity(intent);
+            }
+        });
+        mViewPager = (ViewPager) findViewById(R.id.task_vp);
+        mCreateTaskBt = (Button) findViewById(R.id.create_task_bt);
+        mAcceptTaskBt = (Button) findViewById(R.id.accept_task_bt);
+        mAssingMe = (Button) findViewById(R.id.assign_me_bt);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    mCreateTaskBt.setSelected(true);
+                    mAcceptTaskBt.setSelected(false);
+                    mAssingMe.setSelected(false);
+                } else if (position == 1) {
+                    mCreateTaskBt.setSelected(false);
+                    mAcceptTaskBt.setSelected(false);
+                    mAssingMe.setSelected(true);
+                } else {
+                    mCreateTaskBt.setSelected(false);
+                    mAcceptTaskBt.setSelected(true);
+                    mAssingMe.setSelected(false);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        mViewPager.setAdapter(new AlarmAdapter(getFragmentManager()));
+        mCreateTaskBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(0);
+            }
+        });
+        mAcceptTaskBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(1);
             }
         });
         GlobalInfo.getInstance().mLoginInfo.restoreData(BBLConstant.LOGIN_INFO, LoginInfo.class);
@@ -61,14 +113,37 @@ public class ActivityHome extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.user,menu);
+        getMenuInflater().inflate(R.menu.user, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent=new Intent(this, ActivityProfile.class);
+        Intent intent = new Intent(this, ActivityProfile.class);
         startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
+
+    class AlarmAdapter extends FragmentPagerAdapter {
+
+
+        public AlarmAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = new FragmentAlarmHome();
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", position);
+            fragment.setArguments(bundle);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+    }
+
 }

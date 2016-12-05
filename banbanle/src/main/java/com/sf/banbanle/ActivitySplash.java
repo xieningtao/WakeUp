@@ -30,6 +30,7 @@ public class ActivitySplash extends BaseActivity {
 //                }
                 intent = new Intent(ActivitySplash.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         }, 2000);
     }

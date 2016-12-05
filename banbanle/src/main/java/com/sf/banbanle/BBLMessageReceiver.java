@@ -5,6 +5,7 @@ package com.sf.banbanle;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -19,13 +20,13 @@ import com.maxleap.exception.MLException;
 import com.sf.banbanle.bean.BaiduPushInfo;
 import com.sf.banbanle.bean.LoginInfo;
 import com.sf.banbanle.config.GlobalInfo;
+import com.sf.banbanle.task.ActivityTaskDetail;
 import com.sf.loglib.L;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.concurrent.TransferQueue;
 
 /*
  * Push消息处理receiver。请编写您需要的回调函数， 一般来说： onBind是必须的，用来处理startWork返回值；
@@ -113,7 +114,7 @@ public class BBLMessageReceiver extends PushMessageReceiver {
                             MLObject chatUser = new MLObject("UserInfo");
                             chatUser.put("channelId", channelId);
                             chatUser.put("userId", userId);
-                            chatUser.put("userName",loginInfo.userName);
+                            chatUser.put("userName", loginInfo.userName);
                             saveChannelId(chatUser);
                         } else {
                             L.error(TAG, "addOrUpdateChannelId,exception: " + e);
@@ -124,16 +125,17 @@ public class BBLMessageReceiver extends PushMessageReceiver {
         }
     }
 
-    private void updateChannelId(MLObject chatUser){
+    private void updateChannelId(MLObject chatUser) {
         MLDataManager.fetchInBackground(chatUser, new GetCallback<MLObject>() {
             @Override
             public void done(MLObject mlObject, MLException e) {
-                L.info(TAG,"saveChannelId exception: "+e);
+                L.info(TAG, "saveChannelId exception: " + e);
             }
         });
     }
+
     private void saveChannelId(MLObject chatUser) {
-        MLDataManager.saveInBackground(chatUser,    new SaveCallback() {
+        MLDataManager.saveInBackground(chatUser, new SaveCallback() {
             @Override
             public void done(MLException e) {
                 if (e == null) {
@@ -230,7 +232,15 @@ public class BBLMessageReceiver extends PushMessageReceiver {
         String notifyString = "通知点击 onNotificationClicked title=\"" + title + "\" description=\""
                 + description + "\" customContent=" + customContentString;
         Log.d(TAG, notifyString);
-
+        try {
+            JSONObject jsonObject = new JSONObject(customContentString);
+            String taskId = jsonObject.getString("taskId");
+            Intent intent = new Intent(context, ActivityTaskDetail.class);
+            intent.putExtra(ActivityTaskDetail.TASK_ID, taskId);
+            context.startActivity(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

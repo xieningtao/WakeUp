@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/ny_main_bg"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
 
     <com.basesmartframe.bitmap.rounddrawable.RoundedImageView
@@ -17,27 +18,27 @@
         android:padding="2dp"
         android:scaleType="centerCrop"
         android:src="@drawable/app_icon"
-        app:riv_corner_radius="50dp" />
+        app:riv_corner_radius="50dp"/>
 
     <TextView
         android:id="@+id/title_label_tv"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:gravity="center"
         android:layout_below="@id/photo_iv"
         android:layout_marginTop="12dp"
-        android:text="@string/title" />
+        android:gravity="center"
+        android:text="@string/title"/>
 
     <TextView
         android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_toRightOf="@id/title_label_tv"
-        android:layout_alignTop="@id/title_label_tv"
         android:layout_alignBottom="@id/title_label_tv"
+        android:layout_alignTop="@id/title_label_tv"
         android:layout_marginTop="8dp"
-        android:singleLine="true"
-        android:padding="4dp" />
+        android:layout_toRightOf="@id/title_label_tv"
+        android:padding="4dp"
+        android:singleLine="true"/>
 
     <TextView
         android:id="@+id/content_label_tv"
@@ -45,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title_tv"
         android:layout_marginTop="12dp"
-        android:text="@string/content" />
+        android:text="@string/content"/>
 
     <TextView
         android:id="@+id/content_tv"
@@ -54,5 +55,37 @@
         android:layout_below="@id/content_label_tv"
         android:layout_marginTop="8dp"
         android:minHeight="80dp"
-        android:padding="4dp" />
+        android:padding="4dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        >
+
+        <Button
+            android:id="@+id/deny_bt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/baby_medical_login_bt"
+            android:text="@string/deny_task"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            />
+
+        <Button
+            android:id="@+id/accept_bt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/baby_medical_login_bt"
+            android:text="@string/accept_task"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            />
+    </LinearLayout>
 </RelativeLayout>

@@ -177,6 +177,12 @@
             />
 
         <activity
+            android:name=".user.ActivityProfileEditor"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo"
+            />
+
+        <activity
             android:name="com.basesmartframe.pickphoto.ActivityFragmentContainer"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"

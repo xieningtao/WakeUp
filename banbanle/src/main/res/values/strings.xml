@@ -33,4 +33,21 @@
 
     <string name="title">标题</string>
     <string name="content">内容</string>
+
+    <string name="update_profile_success">信息更新成功</string>
+    <string name="update_profile_fail">信息更新失败</string>
+
+    <string name="profile_edit_empty_tips">内容不能为空</string>
+
+    <string name="my_creation_task">我创建的</string>
+    <string name="my_acception_task">我接受的</string>
+    <string name="my_assignme_task">指派给我</string>
+
+    <string name="get_task_detail_failed">获取详情失败</string>
+    <string name="deny_task">拒绝</string>
+    <string name="accept_task">接受</string>
+    <string name="accept_task_fail">接受失败</string>
+    <string name="deny_task_fail">拒绝失败</string>
+    <string name="accept_task_success">接受成功</string>
+    <string name="deny_task_success">拒绝成功</string>
 </resources>

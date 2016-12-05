@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.basesmartframe.baseui.BaseActivity;
@@ -18,6 +17,7 @@ import com.maxleap.exception.MLException;
 import com.sf.banbanle.bean.BaiduSingleDevicePushBean;
 import com.sf.banbanle.bean.LoginInfo;
 import com.sf.banbanle.bean.UserInfoBean;
+import com.sf.banbanle.config.BBLConstant;
 import com.sf.banbanle.config.GlobalInfo;
 import com.sf.banbanle.http.BDPushHandler;
 import com.sf.banbanle.http.HttpUrl;
@@ -87,10 +87,38 @@ public class ActivityEditContent extends BaseActivity {
 
                 String title = mTitle.getEditText().getText().toString();
                 String content = mContent.getEditText().getText().toString();
-                addTask(title, content, mUserList);
+                addTask(title, content, mUserList.get(0));
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addTask(final String title, final String content, final UserInfoBean userInfoBean) {
+
+        final MLObject task = new MLObject("Task");
+        task.put("title", title);
+        task.put("content", content);
+        task.put("state", 0);
+        task.put("acceptor", userInfoBean.getUserName());
+        UserInfoBean ownerBean = GlobalInfo.getInstance().mInfoBean.getValue();
+        task.put("creator", ownerBean.getUserName());
+        task.put("url", ownerBean.getUrl());
+        task.put("nickName", ownerBean.getNickName());
+        MLDataManager.saveInBackground(task, new SaveCallback() {
+            @Override
+            public void done(MLException e) {
+                if (e == null) {
+                    SFToast.showToast(R.string.add_task_success);
+                    List<UserInfoBean> userInfoBeanList = new ArrayList<UserInfoBean>();
+                    userInfoBeanList.add(userInfoBean);
+                    pushToBatchDevice(userInfoBeanList, title, content, task.getObjectId());
+                } else {
+                    L.error(TAG, "save task error: " + e);
+                    SFToast.showToast(R.string.add_task_fail);
+                }
+            }
+        });
+
     }
 
     private void addTask(final String title, final String content, List<UserInfoBean> userInfoBeen) {
@@ -107,7 +135,7 @@ public class ActivityEditContent extends BaseActivity {
             public void done(MLException e) {
                 if (e == null) {
                     SFToast.showToast(R.string.add_task_success);
-                    pushToBatchDevice(mUserList,title,content,"");
+                    pushToBatchDevice(mUserList, title, content, "");
                 } else {
                     SFToast.showToast(R.string.add_task_fail);
                     L.error(TAG, "addTask exception: " + e);
@@ -122,18 +150,19 @@ public class ActivityEditContent extends BaseActivity {
         task.put("userName", userName);
         task.put("title", title);
         task.put("content", content);
+        task.put("state", BBLConstant.IDLE);
         if (fromMe) {
             task.put("type", 0);
         } else {
             task.put("type", 1);
         }
-        UserInfoBean userInfoBean=GlobalInfo.getInstance().mInfoBean.getValue();
-        task.put("url",userInfoBean.getUrl());
+        UserInfoBean userInfoBean = GlobalInfo.getInstance().mInfoBean.getValue();
+        task.put("url", userInfoBean.getUrl());
         return task;
     }
 
 
-    private void pushToBatchDevice(List<UserInfoBean> infoBeanList,String title,String content,String taskId) {
+    private void pushToBatchDevice(List<UserInfoBean> infoBeanList, String title, String content, String taskId) {
         AjaxParams ajaxParams = new AjaxParams();
         ajaxParams.put("device_type", "3");
         ajaxParams.put("msg_type", "1");

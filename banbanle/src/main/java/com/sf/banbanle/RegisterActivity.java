@@ -8,14 +8,19 @@ import android.view.View;
 import android.widget.Button;
 
 import com.basesmartframe.baseui.BaseActivity;
+import com.maxleap.MLDataManager;
+import com.maxleap.MLObject;
 import com.maxleap.MLUser;
 import com.maxleap.MLUserManager;
+import com.maxleap.SaveCallback;
 import com.maxleap.SignUpCallback;
 import com.maxleap.exception.MLException;
-import com.nostra13.universalimageloader.utils.L;
 import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.bean.UserInfoBean;
 import com.sf.banbanle.config.BBLConstant;
 import com.sf.banbanle.config.GlobalInfo;
+import com.sf.banbanle.user.ActivityProfile;
+import com.sf.loglib.L;
 import com.sf.utils.baseutil.SFToast;
 import com.sflib.CustomView.baseview.EditTextClearDroidView;
 
@@ -64,6 +69,30 @@ public class RegisterActivity extends BaseActivity {
         });
     }
 
+    private void createUserInfo(String userName) {
+        final MLObject mlObject = new MLObject("UserInfo");
+        mlObject.put("userName", userName);
+        MLDataManager.saveInBackground(mlObject, new SaveCallback() {
+            @Override
+            public void done(MLException e) {
+                if (e != null) {
+                    L.error(TAG, "createUserInfo exception: " + e);
+                } else {
+                    UserInfoBean userInfoBean = GlobalInfo.getInstance().mInfoBean.getValue();
+                    if (userInfoBean == null) {
+                        userInfoBean = new UserInfoBean();
+                    }
+                    userInfoBean.setObjectId(mlObject.getObjectId());
+                    GlobalInfo.getInstance().mInfoBean.setValue(userInfoBean);
+                    Intent intent = new Intent(RegisterActivity.this, ActivityProfile.class);
+                    intent.putExtra(ActivityProfile.CHANNEL_ACTIVITY, ActivityProfile.CHANNEL_REGISTER);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+    }
+
     private void doRegister(final String userName, final String pwd) {
         MLUser user = new MLUser();
         user.setUserName(userName);
@@ -78,13 +107,11 @@ public class RegisterActivity extends BaseActivity {
                     SFToast.showToast(R.string.register_success_tip);
                     LoginInfo loginInfo = new LoginInfo(userName, pwd);
                     GlobalInfo.getInstance().mLoginInfo.setValue(loginInfo, BBLConstant.LOGIN_INFO);
-                    Intent intent = new Intent(RegisterActivity.this, ActivityHome.class);
-                    startActivity(intent);
-                    finish();
+                    createUserInfo(userName);
                 } else {
                     // 注册失败
                     SFToast.showToast(R.string.register_fail_tip);
-                    L.e(TAG, "doRegister exception: " + e);
+                    L.error(TAG, "doRegister exception: " + e);
                 }
             }
         });

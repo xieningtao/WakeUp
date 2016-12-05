@@ -7,8 +7,6 @@ import android.widget.BaseAdapter;
 
 import com.basesmartframe.baseadapter.BaseAdapterHelper;
 import com.basesmartframe.baseadapter.checkableadapter.CheckableAdapter;
-import com.basesmartframe.baseadapter.multiadapter.MultiChoiceAdapter;
-import com.basesmartframe.baseadapter.multiadapter.MultiChoiceBaseAdapter;
 import com.basesmartframe.baseui.BasePullListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.maxleap.FindCallback;
@@ -20,9 +18,7 @@ import com.nostra13.universalimageloader.utils.L;
 import com.sf.banbanle.R;
 import com.sf.banbanle.bean.LoginInfo;
 import com.sf.banbanle.bean.UserInfoBean;
-import com.sf.banbanle.bean.UserRelationBean;
 import com.sf.banbanle.config.GlobalInfo;
-import com.sf.banbanle.sign.StringUtility;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -82,6 +78,7 @@ public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
                         userInfoBean.setUrl(object.getString("url"));
                         userInfoBean.setChannelId(object.getString("channelId"));
                         userInfoBean.setUserId(object.getString("userId"));
+                        userInfoBean.setObjectId(object.getObjectId());
                         userInfoBeanList.add(userInfoBean);
                     }
                 }
@@ -120,7 +117,7 @@ public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
 
     @Override
     protected void bindView(BaseAdapterHelper baseAdapterHelper, int i, UserInfoBean userInfoBean) {
-        baseAdapterHelper.setImageBuilder(R.id.photo_iv, userInfoBean.getUrl());
+        baseAdapterHelper.setImageBuilder(R.id.photo_iv, "http://"+userInfoBean.getUrl());
         baseAdapterHelper.setText(R.id.nickName_tv, userInfoBean.getNickName());
         baseAdapterHelper.setText(R.id.userName_tv, userInfoBean.getUserName());
     }

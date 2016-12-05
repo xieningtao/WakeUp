@@ -73,4 +73,5 @@ dependencies {
     compile 'com.sf.core:custom_view:1.0.0@aar'
     compile 'com.sf.core:pull_refresh_lib:1.0.0@aar'
     compile 'com.sf.core:http_client:1.0.0@aar'
+
 }
