@@ -48,6 +48,7 @@ public class ActivityHome extends BaseActivity {
         mCreateTaskBt = (Button) findViewById(R.id.create_task_bt);
         mAcceptTaskBt = (Button) findViewById(R.id.accept_task_bt);
         mAssingMe = (Button) findViewById(R.id.assign_me_bt);
+        mCreateTaskBt.setSelected(true);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -84,6 +85,12 @@ public class ActivityHome extends BaseActivity {
             }
         });
         mAcceptTaskBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(2);
+            }
+        });
+        mAssingMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mViewPager.setCurrentItem(1);

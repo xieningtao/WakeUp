@@ -22,6 +22,7 @@ import com.sf.banbanle.config.GlobalInfo;
 import com.sf.banbanle.http.BDPushHandler;
 import com.sf.banbanle.http.HttpUrl;
 import com.sf.banbanle.http.SFBDPushRequest;
+import com.sf.banbanle.task.ActivityTaskDetail;
 import com.sf.banbanle.user.ActivityFriendsList;
 import com.sf.httpclient.core.AjaxParams;
 import com.sf.httpclient.newcore.MethodType;
@@ -190,8 +191,11 @@ public class ActivityEditContent extends BaseActivity {
             notification.put("description", content);
             notification.put("notification_builder_id", 0);
             notification.put("notification_basic_style", 7);
-            notification.put("open_type", 1);
-            notification.put("url", "http://push.baidu.com");
+            notification.put("open_type", 2);
+            Intent intent = new Intent(ActivityEditContent.this, ActivityTaskDetail.class);
+            intent.putExtra(ActivityTaskDetail.TASK_ID,taskId);
+            String url = intent.toURI();
+            notification.put("pkg_content", url);
             JSONObject jsonCustormCont = new JSONObject();
             jsonCustormCont.put("taskId", taskId); //自定义内容，key-value
             notification.put("custom_content", jsonCustormCont);
