@@ -16,9 +16,11 @@ import com.maxleap.SaveCallback;
 import com.maxleap.exception.MLException;
 import com.sf.banbanle.bean.BaiduSingleDevicePushBean;
 import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.bean.TimeBean;
 import com.sf.banbanle.bean.UserInfoBean;
 import com.sf.banbanle.config.BBLConstant;
 import com.sf.banbanle.config.GlobalInfo;
+import com.sf.banbanle.dialog.SFWheelDateDialog;
 import com.sf.banbanle.http.BDPushHandler;
 import com.sf.banbanle.http.HttpUrl;
 import com.sf.banbanle.http.SFBDPushRequest;
@@ -36,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -49,6 +52,11 @@ public class ActivityEditContent extends BaseActivity {
     public final int ADD_USER_REQUEST = 1010;
     private List<UserInfoBean> mUserList = new ArrayList<>();
 
+    private View mStartTimeView, mEndTimeView;
+    private TextView mStartTimeTv, mEndTimeTv;
+    private String mWeekStr[];
+    private SFWheelDateDialog mDateDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +65,7 @@ public class ActivityEditContent extends BaseActivity {
         mTitle = (EditTextClearDroidView) findViewById(R.id.edit_title);
         mUserListTv = (TextView) findViewById(R.id.user_list_tv);
         mAddUserBt = (Button) findViewById(R.id.add_user_bt);
+        mWeekStr = getResources().getStringArray(R.array.week_day_txt);
         mAddUserBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +73,75 @@ public class ActivityEditContent extends BaseActivity {
                 startActivityForResult(intent, ADD_USER_REQUEST);
             }
         });
+
+        mStartTimeView = findViewById(R.id.start_time_rl);
+        mEndTimeView = findViewById(R.id.end_time_rl);
+        mStartTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimeBean timeBean = (TimeBean) mStartTimeTv.getTag();
+                showDateDialog(timeBean.mTime, 0);
+            }
+        });
+        mEndTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimeBean timeBean = (TimeBean) mEndTimeTv.getTag();
+                showDateDialog(timeBean.mTime, 1);
+            }
+        });
+        mStartTimeTv = (TextView) findViewById(R.id.start_time_tv);
+        mEndTimeTv = (TextView) findViewById(R.id.end_time_tv);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 20);
+        TimeBean startTime = getTimeBean(calendar);
+        calendar.add(Calendar.MINUTE, 30);
+        TimeBean endTime = getTimeBean(calendar);
+        mStartTimeTv.setText(startTime.mContent);
+        mStartTimeTv.setTag(startTime);
+        mEndTimeTv.setText(endTime.mContent);
+        mEndTimeTv.setTag(endTime);
+    }
+
+    private void showDateDialog(long millionSeconds, final int type) {
+        if (mDateDialog == null) {
+            mDateDialog = new SFWheelDateDialog(this);
+            mDateDialog.setDateDialogClick(new SFWheelDateDialog.onWheelDateDialogClick() {
+                @Override
+                public void onCancelClick() {
+
+                }
+
+                @Override
+                public void onSureClick(long millions) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(millions);
+                    TimeBean timeBean = getTimeBean(calendar);
+                    if (type == 0) {
+                        mStartTimeTv.setText(timeBean.mContent);
+                        mStartTimeTv.setTag(timeBean);
+                    } else {
+                        mStartTimeTv.setText(timeBean.mContent);
+                        mStartTimeTv.setTag(timeBean);
+                    }
+                }
+            });
+        }
+        mDateDialog.setCurrentItem(millionSeconds);
+        mDateDialog.show();
+    }
+
+    private TimeBean getTimeBean(Calendar calendar) {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int week = calendar.get(Calendar.DAY_OF_WEEK);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        String hourMinute = String.format("%1$02d:%2$02d", hour, minute);
+        String content = year + "年" + month + "月" + day + "日 " + mWeekStr[week - 1] + " " + hourMinute;
+        long time = calendar.getTimeInMillis();
+        return new TimeBean(time, content);
     }
 
     @Override
@@ -105,6 +183,10 @@ public class ActivityEditContent extends BaseActivity {
         task.put("creator", ownerBean.getUserName());
         task.put("url", ownerBean.getUrl());
         task.put("nickName", ownerBean.getNickName());
+        TimeBean startTime = (TimeBean) mStartTimeTv.getTag();
+        task.put("startTime", startTime.mTime);
+        TimeBean endTime = (TimeBean) mEndTimeTv.getTag();
+        task.put("endTime", endTime.mTime);
         MLDataManager.saveInBackground(task, new SaveCallback() {
             @Override
             public void done(MLException e) {
@@ -193,7 +275,7 @@ public class ActivityEditContent extends BaseActivity {
             notification.put("notification_basic_style", 7);
             notification.put("open_type", 2);
             Intent intent = new Intent(ActivityEditContent.this, ActivityTaskDetail.class);
-            intent.putExtra(ActivityTaskDetail.TASK_ID,taskId);
+            intent.putExtra(ActivityTaskDetail.TASK_ID, taskId);
             String url = intent.toURI();
             notification.put("pkg_content", url);
             JSONObject jsonCustormCont = new JSONObject();

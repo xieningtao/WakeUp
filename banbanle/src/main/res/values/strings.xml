@@ -32,7 +32,8 @@
     <string name="user_not_exist">该用户还没有注册帮帮乐</string>
 
     <string name="title">标题</string>
-    <string name="content">内容</string>
+    <string name="title_input_tip">请输入标题</string>
+    <string name="content_input_tip">请输入内容</string>
 
     <string name="update_profile_success">信息更新成功</string>
     <string name="update_profile_fail">信息更新失败</string>
@@ -50,4 +51,10 @@
     <string name="deny_task_fail">拒绝失败</string>
     <string name="accept_task_success">接受成功</string>
     <string name="deny_task_success">拒绝成功</string>
+    <string name="content">内容</string>
+    <string name="task_start_time">开始时间</string>
+    <string name="task_end_time">结束时间</string>
+
+    <string name="sure_str">确定</string>
+    <string name="cancel_str">取消</string>
 </resources>

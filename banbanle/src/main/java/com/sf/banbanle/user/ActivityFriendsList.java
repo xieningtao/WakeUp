@@ -1,11 +1,7 @@
 package com.sf.banbanle.user;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,7 +60,7 @@ public class ActivityFriendsList extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_REQUEST && resultCode == RESULT_OK) {
-
+            fragmentFriendsList.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

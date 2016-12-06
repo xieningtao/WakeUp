@@ -1,5 +1,7 @@
 package com.sf.banbanle.user;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -144,5 +146,13 @@ public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
         }
         return userInfoBeanList;
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==ActivityFriendsList.ADD_USER_REQUEST&&resultCode== Activity.RESULT_OK){
+            getPullToRefreshListView().setRefreshing(true);
+        }
     }
 }

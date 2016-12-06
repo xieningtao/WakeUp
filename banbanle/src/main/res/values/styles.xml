@@ -1,4 +1,24 @@
 <resources>
 
+    <style name="label_txt">
+        <item name="android:textColor">@color/txt_main_hint_color</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
 
+    <style name="edit_txt">
+        <item name="android:textColor">@color/txt_main_color</item>
+        <item name="android:textColorHint">@color/txt_main_hint_color</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="base_dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/bottom_top_animation</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
 </resources>
