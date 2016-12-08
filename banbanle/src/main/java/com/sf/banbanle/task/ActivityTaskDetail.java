@@ -17,9 +17,12 @@ import com.maxleap.SaveCallback;
 import com.maxleap.exception.MLException;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sf.banbanle.R;
+import com.sf.banbanle.alarm.BBLAlarmManager;
 import com.sf.banbanle.config.BBLConstant;
 import com.sf.loglib.L;
 import com.sf.utils.baseutil.SFToast;
+
+import java.util.Calendar;
 
 /**
  * Created by mac on 16/12/4.
@@ -59,6 +62,27 @@ public class ActivityTaskDetail extends BaseActivity {
         getTaskDetail();
     }
 
+    private long[] getAlarmTime(long startTime, long endTime, int times) {
+        if (startTime >= endTime) {
+            return new long[]{endTime};
+        }
+        long det = (endTime - startTime) / times;
+        long alarmTime[] = new long[times];
+        for (int i = 0; i < times; i++) {
+            alarmTime[i] = startTime + det * i;
+        }
+        return alarmTime;
+    }
+
+    private void createTimer(String objectId, long startTime, long endTime, int times) {
+        Calendar calendar = Calendar.getInstance();
+        long alarmTime[] = getAlarmTime(startTime, endTime, times);
+        for (int i = 0; i < alarmTime.length; i++) {
+            calendar.setTimeInMillis(alarmTime[i]);
+            BBLAlarmManager.getManager().createAlarm(this, calendar, objectId + i, true);
+        }
+    }
+
     private void updateTaskState(final String state) {
         if (mCurObject != null) {
             mCurObject.put("state", state);
@@ -70,6 +94,9 @@ public class ActivityTaskDetail extends BaseActivity {
                             SFToast.showToast(R.string.deny_task_success);
                         } else {
                             SFToast.showToast(R.string.accept_task_success);
+                            long startTime = mCurObject.getLong("startTime");
+                            long endTime = mCurObject.getLong("endTime");
+                            createTimer(mCurObject.getObjectId(), startTime, endTime, 2);
                         }
                     } else {
                         if (BBLConstant.DENY.equals(state)) {

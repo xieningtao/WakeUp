@@ -106,27 +106,27 @@ public class ActivityEditContent extends BaseActivity {
     private void showDateDialog(long millionSeconds, final int type) {
         if (mDateDialog == null) {
             mDateDialog = new SFWheelDateDialog(this);
-            mDateDialog.setDateDialogClick(new SFWheelDateDialog.onWheelDateDialogClick() {
-                @Override
-                public void onCancelClick() {
-
-                }
-
-                @Override
-                public void onSureClick(long millions) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(millions);
-                    TimeBean timeBean = getTimeBean(calendar);
-                    if (type == 0) {
-                        mStartTimeTv.setText(timeBean.mContent);
-                        mStartTimeTv.setTag(timeBean);
-                    } else {
-                        mStartTimeTv.setText(timeBean.mContent);
-                        mStartTimeTv.setTag(timeBean);
-                    }
-                }
-            });
         }
+        mDateDialog.setDateDialogClick(new SFWheelDateDialog.onWheelDateDialogClick() {
+            @Override
+            public void onCancelClick() {
+
+            }
+
+            @Override
+            public void onSureClick(long millions) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(millions);
+                TimeBean timeBean = getTimeBean(calendar);
+                if (type == 0) {
+                    mStartTimeTv.setText(timeBean.mContent);
+                    mStartTimeTv.setTag(timeBean);
+                } else {
+                    mEndTimeTv.setText(timeBean.mContent);
+                    mEndTimeTv.setTag(timeBean);
+                }
+            }
+        });
         mDateDialog.setCurrentItem(millionSeconds);
         mDateDialog.show();
     }
@@ -177,7 +177,7 @@ public class ActivityEditContent extends BaseActivity {
         final MLObject task = new MLObject("Task");
         task.put("title", title);
         task.put("content", content);
-        task.put("state", 0);
+        task.put("state", BBLConstant.IDLE);
         task.put("acceptor", userInfoBean.getUserName());
         UserInfoBean ownerBean = GlobalInfo.getInstance().mInfoBean.getValue();
         task.put("creator", ownerBean.getUserName());

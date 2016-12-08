@@ -14,9 +14,20 @@ import static android.content.Context.ALARM_SERVICE;
  */
 
 public class BBLAlarmManager {
+    private static BBLAlarmManager manager = new BBLAlarmManager();
+    private final String ALARM_ID = "alarm_id";
 
-    public void createAlarm(Context context, Calendar calendar, boolean repeat) {
+    private BBLAlarmManager() {
+
+    }
+
+    public static BBLAlarmManager getManager() {
+        return manager;
+    }
+
+    public void createAlarm(Context context, Calendar calendar, String alarmId, boolean repeat) {
         Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra(ALARM_ID, alarmId);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);//设置闹钟
@@ -27,9 +38,10 @@ public class BBLAlarmManager {
         }
     }
 
-    public void destroyAlarm(Context context){
+    public void destroyAlarm(Context context, String alarmId) {
         Intent intent = new Intent(context,
                 AlarmReceiver.class);
+        intent.putExtra(ALARM_ID, alarmId);
         PendingIntent sender = PendingIntent.getBroadcast(
                 context, 0, intent, 0);
         // And cancel the alarm.

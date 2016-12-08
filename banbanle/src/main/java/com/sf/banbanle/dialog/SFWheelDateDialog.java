@@ -23,7 +23,8 @@ public class SFWheelDateDialog extends Dialog {
     private WheelViewAdapter mFirstAdapter, mSecondAdapter, mThirdAdapter;
     private String mWeekDayStr[];
     private String mMonthStr[];
-    private long mCurMillions;
+    private Calendar mOriginCalendar;
+    private long mOriginTime;
     private onWheelDateDialogClick mDateDialogClick;
 
     public static interface onWheelDateDialogClick {
@@ -59,7 +60,11 @@ public class SFWheelDateDialog extends Dialog {
         mThirdWv = (WheelView) rootView.findViewById(R.id.third_wv);
         mWeekDayStr = getContext().getResources().getStringArray(R.array.week_day_txt);
         mMonthStr = getContext().getResources().getStringArray(R.array.month_txt);
-        mFirstAdapter = new DateWheelAdapter(getContext(), 365, 0);
+        mOriginCalendar = Calendar.getInstance();
+        //5年前
+        mOriginCalendar.add(Calendar.YEAR, -5);
+        mOriginTime = mOriginCalendar.getTimeInMillis();
+        mFirstAdapter = new DateWheelAdapter(getContext(), Integer.MAX_VALUE, 0);
         mSecondAdapter = new DateWheelAdapter(getContext(), 24, 1);
         mThirdAdapter = new DateWheelAdapter(getContext(), 60, 2);
         mFirstWv.setCyclic(true);
@@ -88,25 +93,25 @@ public class SFWheelDateDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 dismiss();
-                int firstItem = mFirstWv.getCurrentItem();
-                int secondItem = mSecondWv.getCurrentItem();
-                int thirdItem = mThirdWv.getCurrentItem()+1;
-                long total = firstItem * 1000 * 24 * 60 * 60 + secondItem * 1000 * 60 * 60 + thirdItem * 1000 * 60 + mCurMillions;
+                int hour = mSecondWv.getCurrentItem();
+                int minute = mThirdWv.getCurrentItem();
+                mOriginCalendar.set(Calendar.HOUR_OF_DAY, hour);
+                mOriginCalendar.set(Calendar.MINUTE, minute);
                 if (mDateDialogClick != null) {
-                    mDateDialogClick.onSureClick(total);
+                    mDateDialogClick.onSureClick(mOriginCalendar.getTimeInMillis());
                 }
             }
         });
     }
 
     public void setCurrentItem(long millionSeconds) {
-        Calendar curCalendar = Calendar.getInstance();
-        mCurMillions = curCalendar.getTimeInMillis();
-        long det = Math.abs(millionSeconds - mCurMillions);
-        int day = (int) (det / (1000 * 60 * 60 * 24));
-        int hour = (int) (det / (1000 * 60 * 60) - day * 24);
-        int minute = (int) (det / (1000 * 60) - day * 24 * 60 - hour * 60);
-        mFirstWv.setCurrentItem(day);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millionSeconds);
+        int detDay = (int) ((calendar.getTimeInMillis() -mOriginTime) / (1000 * 60 * 60 * 24F));
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        mFirstWv.setCurrentItem(detDay);
         mSecondWv.setCurrentItem(hour);
         mThirdWv.setCurrentItem(minute);
     }
@@ -124,15 +129,11 @@ public class SFWheelDateDialog extends Dialog {
         private LayoutInflater mLayoutInflater;
         private int mCount;
         private int mIndex = 0;
-        private Calendar mCalendar;
-        private long mCurMillis;
 
         public DateWheelAdapter(Context context, int count, int index) {
             this.mContext = context;
             this.mCount = count;
             this.mIndex = index;
-            this.mCalendar = Calendar.getInstance();
-            mCurMillis = mCalendar.getTimeInMillis();
             mLayoutInflater = LayoutInflater.from(context);
         }
 
@@ -144,22 +145,16 @@ public class SFWheelDateDialog extends Dialog {
 
         public String getCurStr(int position) {
             if (mIndex == 0) {
-                mCalendar.setTimeInMillis(mCurMillis);
-                mCalendar.add(Calendar.DAY_OF_MONTH, position);
-                int month = mCalendar.get(Calendar.MONTH) + 1;
-                int day = mCalendar.get(Calendar.DAY_OF_MONTH);
-                int weekDay = mCalendar.get(Calendar.DAY_OF_WEEK);
+                mOriginCalendar.setTimeInMillis(mOriginTime);
+                mOriginCalendar.add(Calendar.DAY_OF_YEAR, position);
+                int month = mOriginCalendar.get(Calendar.MONTH) + 1;
+                int day = mOriginCalendar.get(Calendar.DAY_OF_MONTH);
+                int weekDay = mOriginCalendar.get(Calendar.DAY_OF_WEEK);
                 return month + "月" + day + "日" + " " + getWeekDayStr(weekDay - 1);
             } else if (mIndex == 1) {
-                mCalendar.setTimeInMillis(mCurMillis);
-                mCalendar.add(Calendar.HOUR_OF_DAY, position);
-                int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
-                return String.format("%1$,02d", hour) + "时";
+                return String.format("%1$,02d", position) + "时";
             } else {
-                mCalendar.setTimeInMillis(mCurMillis);
-                mCalendar.add(Calendar.MINUTE, position);
-                int minute = mCalendar.get(Calendar.MINUTE) + 1;
-                return String.format("%1$,02d", minute) + "分";
+                return String.format("%1$,02d", position) + "分";
             }
         }
 

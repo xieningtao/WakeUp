@@ -22,6 +22,7 @@
             android:background="@drawable/baby_medical_login_bt"
             android:text="@string/add_user"
             android:textColor="@color/white"
+            android:textSize="14sp"
             />
 
         <TextView
