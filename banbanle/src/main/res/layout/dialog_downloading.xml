@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_half">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@color/white"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/upgrade_tips_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="下载中..."
+            android:textColor="@color/text_black"
+            android:textSize="16sp" />
+
+        <ProgressBar
+            android:id="@+id/upgrade_pb"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@id/upgrade_tips_tv"
+            android:layout_margin="10dp" />
+
+        <TextView
+            android:id="@+id/upgrade_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/upgrade_pb"
+            android:layout_below="@id/upgrade_pb"
+            android:textColor="@color/actionbar_blue"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/retry_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/upgrade_pb"
+            android:layout_alignRight="@id/upgrade_pb"
+            android:text="点击重新下载"
+            android:textColor="@color/text_black"
+            android:visibility="gone" />
+    </RelativeLayout>
+</RelativeLayout>

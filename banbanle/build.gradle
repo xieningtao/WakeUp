@@ -8,15 +8,15 @@ android {
         applicationId "com.sf.banbanle"
         minSdkVersion 17
         multiDexEnabled true
-        versionCode 1
-        versionName "1.0"
+        versionCode 1000
+        versionName "1.0.0"
         ndk {
             abiFilters "armeabi", "armeabi-v7a"
         }
 
     }
 
-    dexOptions{
+    dexOptions {
         javaMaxHeapSize "4g"
     }
     sourceSets {
@@ -63,7 +63,6 @@ dependencies {
     compile 'com.sf.core:sf_umeng_lib:1.0.0@aar'
     compile 'com.sf.core:sf_pay_lib:1.0.0@aar'
     compile 'com.sf.core:sf_circle_lib:1.0.0@aar'
-    compile 'com.sf.core:sfchat_lib:1.0.0@aar'
     compile 'com.sf.core:sf_log_lib:1.0.0@aar'
     compile 'com.sf.core:sf_share_lib:1.0.0@aar'
     compile 'com.sf.core:baidu_lib:1.0.0@aar'
@@ -73,5 +72,5 @@ dependencies {
     compile 'com.sf.core:custom_view:1.0.0@aar'
     compile 'com.sf.core:pull_refresh_lib:1.0.0@aar'
     compile 'com.sf.core:http_client:1.0.0@aar'
-
+    compile 'com.sf.core:sfchat_lib:1.0.0@aar'
 }

@@ -17,10 +17,14 @@ import com.maxleap.im.MLParrot;
 import com.maxleap.im.ParrotException;
 import com.nostra13.universalimageloader.utils.L;
 import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.bean.MLObjectParserUtil;
 import com.sf.banbanle.bean.TaskBean;
 import com.sf.banbanle.config.BBLConstant;
+import com.sf.banbanle.config.BBLMessageId;
 import com.sf.banbanle.config.GlobalInfo;
 import com.sf.banbanle.task.ActivityTaskDetail;
+import com.sflib.reflection.core.SFIntegerMessage;
+import com.sflib.reflection.core.ThreadId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,15 @@ public class FragmentAlarmHome extends BasePullListFragment<TaskBean> {
             return bundle.getInt("position");
         }
         return 0;
+    }
+
+    @SFIntegerMessage(messageId = BBLMessageId.REFRESH_TASK, theadId = ThreadId.MainThread)
+    public void onRefreshTask(int index) {
+        if (mIndex == index) {
+            getPullToRefreshListView().setRefreshing(true);
+        }
+
+
     }
 
     private void getTasks(boolean refresh) {
@@ -70,16 +83,7 @@ public class FragmentAlarmHome extends BasePullListFragment<TaskBean> {
                     List<TaskBean> taskBeanList = new ArrayList<TaskBean>();
                     if (e == null && list != null) {
                         for (MLObject object : list) {
-                            TaskBean taskBean = new TaskBean();
-                            taskBean.setContent(object.getString("content"));
-                            taskBean.setState(object.getString("state"));
-                            taskBean.setTitle(object.getString("title"));
-                            taskBean.setType(object.getInt("type"));
-                            taskBean.setUserName(object.getString("creator"));
-                            taskBean.setId(object.getObjectId());
-                            taskBean.setUrl(object.getString("url"));
-                            taskBean.setNickName(object.getString("nickName"));
-                            taskBeanList.add(taskBean);
+                            taskBeanList.add(MLObjectParserUtil.parserTaskBean(object));
                         }
                     } else {
                         L.e(TAG, "get task list exception: " + e);
@@ -113,6 +117,13 @@ public class FragmentAlarmHome extends BasePullListFragment<TaskBean> {
         TaskBean taskBean = getPullItem(position - getHeadViewCount());
         Intent intent = new Intent(getActivity(), ActivityTaskDetail.class);
         intent.putExtra(ActivityTaskDetail.TASK_ID, taskBean.getId());
+        if (mIndex == 0) {
+            intent.putExtra(BBLConstant.TO_TASK_DETAIL_CHANNEL, BBLConstant.CREATOR);
+        } else if (mIndex == 1) {
+            intent.putExtra(BBLConstant.TO_TASK_DETAIL_CHANNEL, BBLConstant.ASSIGN);
+        } else {
+            intent.putExtra(BBLConstant.TO_TASK_DETAIL_CHANNEL, BBLConstant.ACCEPT);
+        }
         getActivity().startActivity(intent);
     }
 

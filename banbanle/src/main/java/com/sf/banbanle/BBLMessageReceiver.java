@@ -17,8 +17,11 @@ import com.maxleap.MLQuery;
 import com.maxleap.MLQueryManager;
 import com.maxleap.SaveCallback;
 import com.maxleap.exception.MLException;
+import com.sf.banbanle.alarm.BBLAlarmManager;
 import com.sf.banbanle.bean.BaiduPushInfo;
 import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.bean.MLObjectParserUtil;
+import com.sf.banbanle.bean.PushTaskBean;
 import com.sf.banbanle.config.GlobalInfo;
 import com.sf.banbanle.task.ActivityTaskDetail;
 import com.sf.loglib.L;
@@ -26,6 +29,7 @@ import com.sf.loglib.L;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.List;
 
 /*
@@ -197,26 +201,53 @@ public class BBLMessageReceiver extends PushMessageReceiver {
         String notifyString = "通知到达 onNotificationArrived  title=\"" + title
                 + "\" description=\"" + description + "\" customContent="
                 + customContentString;
-        Log.d(TAG, notifyString);
-
+        L.info(TAG, notifyString);
         // 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
         if (!TextUtils.isEmpty(customContentString)) {
-            JSONObject customJson = null;
             try {
-                customJson = new JSONObject(customContentString);
-                String myvalue = null;
-                if (!customJson.isNull("mykey")) {
-                    myvalue = customJson.getString("mykey");
+                JSONObject customJson = new JSONObject(customContentString);
+                long startTime = 0;
+                long endTime = 0;
+                if (!customJson.isNull("startTime") && !customJson.isNull("endTime")) {
+                    startTime = customJson.getLong("startTime");
+                    endTime = customJson.getLong("endTime");
+                    String videoPath = customJson.getString("videoPath");
+                    PushTaskBean taskBean = new PushTaskBean();
+                    taskBean.setContent(description);
+                    taskBean.setTitle(title);
+                    taskBean.setId(customJson.getString("taskId"));
+                    taskBean.setVideoPath(videoPath);
+                    createTimer(context, taskBean, startTime, endTime, 2);
+                    L.info(TAG, "onNotificationArrived create timer successfully");
                 }
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
+                L.error(TAG, "onNotificationArrived exception: " + e);
             }
         }
-        // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-        // 你可以參考 onNotificationClicked中的提示从自定义内容获取具体值
-        updateContent(context, notifyString);
     }
+
+    private long[] getAlarmTime(long startTime, long endTime, int times) {
+        if (startTime >= endTime) {
+            return new long[]{endTime};
+        }
+        long det = (endTime - startTime) / times;
+        long alarmTime[] = new long[times];
+        for (int i = 0; i < times; i++) {
+            alarmTime[i] = startTime + det * i;
+        }
+        return alarmTime;
+    }
+
+    private void createTimer(Context context, PushTaskBean taskBean, long startTime, long endTime, int times) {
+        Calendar calendar = Calendar.getInstance();
+        long alarmTime[] = getAlarmTime(startTime, endTime, times);
+        for (int i = 0; i < alarmTime.length; i++) {
+            calendar.setTimeInMillis(alarmTime[i]);
+            BBLAlarmManager.getManager().createAlarm(context, calendar, taskBean.getId() + i, taskBean, false);
+        }
+    }
+
 
     /**
      * 接收通知点击的函数。

@@ -16,12 +16,15 @@ import com.maxleap.SaveCallback;
 import com.maxleap.exception.MLException;
 import com.sf.banbanle.bean.BaiduSingleDevicePushBean;
 import com.sf.banbanle.bean.LoginInfo;
+import com.sf.banbanle.bean.TaskBean;
 import com.sf.banbanle.bean.TimeBean;
 import com.sf.banbanle.bean.UserInfoBean;
 import com.sf.banbanle.config.BBLConstant;
+import com.sf.banbanle.config.BBLMessageId;
 import com.sf.banbanle.config.GlobalInfo;
 import com.sf.banbanle.dialog.SFWheelDateDialog;
 import com.sf.banbanle.http.BDPushHandler;
+import com.sf.banbanle.http.BDPushUtil;
 import com.sf.banbanle.http.HttpUrl;
 import com.sf.banbanle.http.SFBDPushRequest;
 import com.sf.banbanle.task.ActivityTaskDetail;
@@ -31,8 +34,11 @@ import com.sf.httpclient.newcore.MethodType;
 import com.sf.httpclient.newcore.SFHttpStringCallback;
 import com.sf.httpclient.newcore.SFRequest;
 import com.sf.loglib.L;
+import com.sf.utils.baseutil.NetWorkManagerUtil;
 import com.sf.utils.baseutil.SFToast;
+import com.sf.utils.baseutil.StringBuilderHelp;
 import com.sflib.CustomView.baseview.EditTextClearDroidView;
+import com.sflib.reflection.core.SFBridgeManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,6 +62,8 @@ public class ActivityEditContent extends BaseActivity {
     private TextView mStartTimeTv, mEndTimeTv;
     private String mWeekStr[];
     private SFWheelDateDialog mDateDialog;
+    private TaskBean mTaskBean;
+    private UserInfoBean mUserInfoBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,15 +100,41 @@ public class ActivityEditContent extends BaseActivity {
         });
         mStartTimeTv = (TextView) findViewById(R.id.start_time_tv);
         mEndTimeTv = (TextView) findViewById(R.id.end_time_tv);
+        Intent intent = getIntent();
+        if (intent != null) {
+            mTaskBean = (TaskBean) intent.getSerializableExtra(BBLConstant.TASK_BEAN);
+            mUserInfoBean = (UserInfoBean) intent.getSerializableExtra(BBLConstant.USER_INFO_BEAN);
+        }
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 20);
+        if (mTaskBean != null) {
+            calendar.setTimeInMillis(mTaskBean.getStartTime());
+        } else {
+            calendar.add(Calendar.MINUTE, 20);
+        }
         TimeBean startTime = getTimeBean(calendar);
-        calendar.add(Calendar.MINUTE, 30);
+        if (mTaskBean != null) {
+            calendar.setTimeInMillis(mTaskBean.getEndTime());
+        } else {
+            calendar.add(Calendar.MINUTE, 30);
+        }
         TimeBean endTime = getTimeBean(calendar);
         mStartTimeTv.setText(startTime.mContent);
         mStartTimeTv.setTag(startTime);
         mEndTimeTv.setText(endTime.mContent);
         mEndTimeTv.setTag(endTime);
+
+        if (mUserInfoBean != null && mTaskBean != null) {
+            mAddUserBt.setEnabled(false);
+            mUserList.add(mUserInfoBean);
+            fillViewWithData();
+        }
+    }
+
+    private void fillViewWithData() {
+        mTitle.getEditText().setText(mTaskBean.getTitle());
+        mContent.getEditText().setText(mTaskBean.getContent());
+        mUserListTv.setText(constructUserList());
+
     }
 
     private void showDateDialog(long millionSeconds, final int type) {
@@ -164,6 +198,10 @@ public class ActivityEditContent extends BaseActivity {
                     return true;
                 }
 
+                if (!NetWorkManagerUtil.isNetworkAvailable()) {
+                    SFToast.showToast(R.string.net_unavailable);
+                    return true;
+                }
                 String title = mTitle.getEditText().getText().toString();
                 String content = mContent.getEditText().getText().toString();
                 addTask(title, content, mUserList.get(0));
@@ -173,8 +211,10 @@ public class ActivityEditContent extends BaseActivity {
     }
 
     private void addTask(final String title, final String content, final UserInfoBean userInfoBean) {
-
         final MLObject task = new MLObject("Task");
+        if (mTaskBean != null) {
+            task.setObjectId(mTaskBean.getId());
+        }
         task.put("title", title);
         task.put("content", content);
         task.put("state", BBLConstant.IDLE);
@@ -183,18 +223,20 @@ public class ActivityEditContent extends BaseActivity {
         task.put("creator", ownerBean.getUserName());
         task.put("url", ownerBean.getUrl());
         task.put("nickName", ownerBean.getNickName());
-        TimeBean startTime = (TimeBean) mStartTimeTv.getTag();
+        final TimeBean startTime = (TimeBean) mStartTimeTv.getTag();
         task.put("startTime", startTime.mTime);
-        TimeBean endTime = (TimeBean) mEndTimeTv.getTag();
+        final TimeBean endTime = (TimeBean) mEndTimeTv.getTag();
         task.put("endTime", endTime.mTime);
         MLDataManager.saveInBackground(task, new SaveCallback() {
             @Override
             public void done(MLException e) {
                 if (e == null) {
                     SFToast.showToast(R.string.add_task_success);
-                    List<UserInfoBean> userInfoBeanList = new ArrayList<UserInfoBean>();
-                    userInfoBeanList.add(userInfoBean);
-                    pushToBatchDevice(userInfoBeanList, title, content, task.getObjectId());
+                    List<String> channelIds = new ArrayList<String>();
+                    channelIds.add(userInfoBean.getChannelId());
+                    pushMsgToDevice(channelIds, title, content, task.getObjectId(), startTime.mTime, endTime.mTime);
+                    SFBridgeManager.send(BBLMessageId.REFRESH_TASK, 0);
+                    finish();
                 } else {
                     L.error(TAG, "save task error: " + e);
                     SFToast.showToast(R.string.add_task_fail);
@@ -218,7 +260,11 @@ public class ActivityEditContent extends BaseActivity {
             public void done(MLException e) {
                 if (e == null) {
                     SFToast.showToast(R.string.add_task_success);
-                    pushToBatchDevice(mUserList, title, content, "");
+                    List<String> channelIds = new ArrayList<String>();
+                    for (UserInfoBean userInfoBean : mUserList) {
+                        channelIds.add(userInfoBean.getChannelId());
+                    }
+                    pushMsgToDevice(channelIds, title, content, "", 0, 0);
                 } else {
                     SFToast.showToast(R.string.add_task_fail);
                     L.error(TAG, "addTask exception: " + e);
@@ -244,67 +290,33 @@ public class ActivityEditContent extends BaseActivity {
         return task;
     }
 
-
-    private void pushToBatchDevice(List<UserInfoBean> infoBeanList, String title, String content, String taskId) {
-        AjaxParams ajaxParams = new AjaxParams();
-        ajaxParams.put("device_type", "3");
-        ajaxParams.put("msg_type", "1");
-
-//        BaiduPushInfo pushInfo = GlobalInfo.getInstance().mPushInfo.getValue();
-//        if (pushInfo != null) {
-//            ajaxParams.put("channel_id", "4500265865066869730");
-//            BaiduPushBean pushBean = new BaiduPushBean();
-//            pushBean.setTitle("hello");
-//            pushBean.setDescription("description");
-//            Gson gson = new Gson();
-//            ajaxParams.put("msg", gson.toJson(pushBean));
-//        }
-
+    private void pushMsgToDevice(List<String> channelIds, String title, String content, String taskId, long startTime, long endTime) {
         JSONObject notification = new JSONObject();
         try {
-//            JSONObject jsonChanneId = new JSONObject();
-            JSONArray jsonArray = new JSONArray();
-            for (UserInfoBean infoBean : infoBeanList) {
-                jsonArray.put(Long.valueOf(infoBean.getChannelId()));
-            }
-            ajaxParams.put("channel_ids", jsonArray.toString());
-
             notification.put("title", title);
-            notification.put("description", content);
+            if (mTaskBean != null) {
+                notification.put("description", "任务被修改了,请注意查看");
+            } else {
+                notification.put("description", content);
+            }
             notification.put("notification_builder_id", 0);
             notification.put("notification_basic_style", 7);
             notification.put("open_type", 2);
             Intent intent = new Intent(ActivityEditContent.this, ActivityTaskDetail.class);
             intent.putExtra(ActivityTaskDetail.TASK_ID, taskId);
+            intent.putExtra(BBLConstant.TO_TASK_DETAIL_CHANNEL,BBLConstant.ASSIGN);
             String url = intent.toURI();
             notification.put("pkg_content", url);
             JSONObject jsonCustormCont = new JSONObject();
             jsonCustormCont.put("taskId", taskId); //自定义内容，key-value
+            jsonCustormCont.put("startTime", startTime);
+            jsonCustormCont.put("endTime", endTime);
+            jsonCustormCont.put("videoPath","");
             notification.put("custom_content", jsonCustormCont);
         } catch (Exception e) {
             L.error(TAG, "pushToSingleDevice exception: " + e);
         }
-        ajaxParams.put("msg", notification.toString());
-        SFBDPushRequest _request = new SFBDPushRequest(HttpUrl.PUSH_BATCH_DEVICE, MethodType.POST, ajaxParams) {
-            @Override
-            public Class getClassType() {
-                return BaiduSingleDevicePushBean.class;
-            }
-
-        };
-        BDPushHandler pushHandler = new BDPushHandler(_request, new SFHttpStringCallback<BaiduSingleDevicePushBean>() {
-
-            @Override
-            public void onSuccess(SFRequest sfRequest, BaiduSingleDevicePushBean pushBean) {
-                L.info(TAG, "pushToSingleDevice,onsuccess: " + pushBean);
-            }
-
-            @Override
-            public void onFailed(SFRequest sfRequest, Exception e) {
-                L.error(TAG, "pushToSingleDevice,onfailed: " + e);
-            }
-        });
-        pushHandler.start();
+        BDPushUtil.pushToBatchDevice(channelIds, notification);
     }
 
 

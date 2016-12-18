@@ -1,33 +1,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.sf.banbanle">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.sf.banbanle">
 
 
     <uses-sdk
         android:minSdkVersion="17"
         android:targetSdkVersion="22"
-        tools:overrideLibrary="android.support.v17.leanback"
-        />
+        tools:overrideLibrary="android.support.v17.leanback" />
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
     <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 
     <!--百度地图-->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <!--百度定位-->
     <!-- 这个权限用于进行网络定位-->
@@ -45,7 +44,7 @@
     <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <!-- 访问网络，网络定位需要上网-->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- SD卡读取权限，用户写入离线定位数据-->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
     <!--<instrumentation-->
@@ -64,17 +63,18 @@
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <!--  富媒体需要声明的权限  -->
-    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
-    <uses-permission
-        android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.com.sf.banbanle"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.com.sf.banbanle" />
 
     <permission
         android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.com.sf.banbanle"
-        android:protectionLevel="normal"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+        android:protectionLevel="normal" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:name=".BanBanLeApp"
         android:icon="@drawable/app_icon"
@@ -88,18 +88,17 @@
         <activity
             android:name=".ActivitySplash"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <!--友盟分享-->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="58411823f29d98594a0000f0"/>
+            android:value="58411823f29d98594a0000f0" />
 
         <!--qq和空间-->
         <activity
@@ -107,18 +106,18 @@
             android:launchMode="singleTask"
             android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="tencent100424468"/>
+                <data android:scheme="tencent100424468" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!--微信-->
         <activity
@@ -126,58 +125,60 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
             android:name="com.umeng.socialize.editorpage.ShareActivity"
-            android:excludeFromRecents="true"/>
+            android:excludeFromRecents="true" />
         <!---->
 
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            />
+            android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
-            />
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
         <activity
             android:name=".ActivityEditContent"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            />
+            android:theme="@android:style/Theme.Holo" />
         <activity
-            android:name=".ActivityHome"
+            android:name=".FragmentHome"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            />
+            android:theme="@android:style/Theme.Holo" />
 
         <activity
             android:name=".user.ActivityFriendsList"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            />
+            android:theme="@android:style/Theme.Holo" />
 
         <activity
             android:name=".user.ActivityAddUser"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            />
+            android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".user.ActivityProfile"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            />
+            android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".task.ActivityTaskDetail"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+
+        <activity
+            android:name=".user.ActivityProfileEditor"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+
+        <activity android:name=".NewActivityHome"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo"
             />
 
-        <activity
-            android:name=".user.ActivityProfileEditor"
+        <activity android:name=".ActivityVersion"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo"
             />
@@ -186,9 +187,21 @@
             android:name="com.basesmartframe.pickphoto.ActivityFragmentContainer"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            />
+            android:windowSoftInputMode="adjustResize" />
 
+        <!-- 闹钟 -->
+        <receiver android:name=".alarm.AlarmReceiver">
+            <intent-filter>
+                <action android:name="com.sf.banbanle.alarm.message" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 显示闹铃浮窗-->
+        <service android:name=".alarm.BBLAlarmService">
+            <intent-filter>
+                <action android:name="com.sf.banbanle.alarm.floating" />
+            </intent-filter>
+        </service>
         <!-- push 应用定义消息 receiver 声明  -->
         <receiver android:name="com.sf.banbanle.BBLMessageReceiver">
             <intent-filter>
@@ -203,8 +216,9 @@
 
         <!-- push service start -->
         <!--  用于接收系统消息以保证 PushService 正常运行  -->
-        <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver"
-                  android:process=":bdservice_v1" >
+        <receiver
+            android:name="com.baidu.android.pushservice.PushServiceReceiver"
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -219,53 +233,55 @@
         </receiver>
 
         <!-- Push 服务接收客户端发送的各种请求-->
-        <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver"
-                  android:process=":bdservice_v1" >
+        <receiver
+            android:name="com.baidu.android.pushservice.RegistrationReceiver"
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="com.baidu.android.pushservice.action.METHOD" />
                 <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
         <!-- Push  服务  -->
         <!--  注意：在 4.0 及以后的版本需加上如下所示的 intent-filter action -->
-        <service android:name="com.baidu.android.pushservice.PushService"
-                 android:exported="true"
-                 android:process=":bdservice_v1" >
-            <intent-filter >
+        <service
+            android:name="com.baidu.android.pushservice.PushService"
+            android:exported="true"
+            android:process=":bdservice_v1">
+            <intent-filter>
                 <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE" />
             </intent-filter>
         </service>
         <!--  注意：在 4.4 及以后的版本需加上如下所示的 service -->
-        <service android:name="com.baidu.android.pushservice.CommandService"
-                 android:exported="true" >
-        </service>
+        <service
+            android:name="com.baidu.android.pushservice.CommandService"
+            android:exported="true"></service>
 
         <!-- 适配Android N系统必需的ContentProvider声明，写权限包含应用包名-->
         <provider
             android:name="com.baidu.android.pushservice.PushInfoProvider"
             android:authorities="com.baidu.push.example.bdpush"
-            android:writePermission="baidu.push.permission.WRITE_PUSHINFOPROVIDER.com.baidu.push.example"
-            android:protectionLevel = "signature"
-            android:exported="true" />
+            android:exported="true"
+            android:protectionLevel="signature"
+            android:writePermission="baidu.push.permission.WRITE_PUSHINFOPROVIDER.com.baidu.push.example" />
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
 
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="hmq8yUzqaGtjZbEcwFUmPV2wO8jgVixR"/>
+            android:value="hmq8yUzqaGtjZbEcwFUmPV2wO8jgVixR" />
 
         <meta-data
             android:name="api_key"
-            android:value="WEITF2EH9D7yzwdkvMZhxRzI"/>
+            android:value="WEITF2EH9D7yzwdkvMZhxRzI" />
 
         <meta-data
             android:name="ml_channel"
-            android:value="test"/>
+            android:value="test" />
     </application>
 
 </manifest>

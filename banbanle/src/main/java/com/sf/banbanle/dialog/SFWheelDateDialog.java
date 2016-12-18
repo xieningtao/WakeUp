@@ -93,6 +93,8 @@ public class SFWheelDateDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 dismiss();
+                mOriginCalendar.setTimeInMillis(mOriginTime);
+                mOriginCalendar.add(Calendar.DAY_OF_YEAR, mFirstWv.getCurrentItem());
                 int hour = mSecondWv.getCurrentItem();
                 int minute = mThirdWv.getCurrentItem();
                 mOriginCalendar.set(Calendar.HOUR_OF_DAY, hour);

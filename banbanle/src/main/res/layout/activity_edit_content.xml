@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/ny_main_bg"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ny_main_bg"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
 
     <RelativeLayout
         android:id="@+id/user_fl"
@@ -122,4 +121,11 @@
         android:textCursorDrawable="@null"
         android:textSize="15sp"
         />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pic_rl"
+        android:layout_below="@+id/edit_content"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

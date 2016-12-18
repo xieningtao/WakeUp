@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/ny_main_bg"
-                android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ny_main_bg"
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -16,8 +15,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/home_task_outline"
         android:orientation="horizontal"
-        android:padding="1dp"
-        >
+        android:padding="1dp">
 
         <Button
             android:id="@+id/create_task_bt"
@@ -26,13 +24,13 @@
             android:layout_weight="1"
             android:background="@drawable/create_task_selector"
             android:text="@string/my_creation_task"
-            android:textColor="@color/txt_main_color"
-            />
+            android:textColor="@color/txt_main_color" />
+
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/actionbar_blue"
-            />
+            android:background="@color/actionbar_blue" />
+
         <Button
             android:id="@+id/assign_me_bt"
             android:layout_width="0dp"
@@ -40,13 +38,12 @@
             android:layout_weight="1"
             android:background="@drawable/middle_task_selector"
             android:text="@string/my_assignme_task"
-            android:textColor="@color/txt_main_color"
-            />
+            android:textColor="@color/txt_main_color" />
+
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/actionbar_blue"
-            />
+            android:background="@color/actionbar_blue" />
 
         <Button
             android:id="@+id/accept_task_bt"
@@ -55,8 +52,7 @@
             android:layout_weight="1"
             android:background="@drawable/accept_task_selector"
             android:text="@string/my_acception_task"
-            android:textColor="@color/txt_main_color"
-            />
+            android:textColor="@color/txt_main_color" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
@@ -66,8 +62,7 @@
         android:layout_below="@id/task_tab_ll"
         android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        />
+        android:paddingRight="10dp" />
 
     <TextView
         android:id="@+id/add_alarm_iv"
@@ -82,5 +77,5 @@
         android:text="添加"
         android:textColor="@color/white"
         android:textSize="15sp"
-        />
+        android:visibility="gone" />
 </RelativeLayout>

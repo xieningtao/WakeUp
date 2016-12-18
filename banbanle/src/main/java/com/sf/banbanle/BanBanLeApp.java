@@ -53,7 +53,12 @@ public class BanBanLeApp extends BaseApp {
     private void init() {
         SFBaiduLocationManager.getInstance().init(getApplicationContext());
         SFBaiduLocationManager.getInstance().requestLocate();
-        MaxLeap.initialize(this, APP_ID, APP_ID_KEY, MaxLeap.REGION_CN);
+
+        MaxLeap.Options options = new MaxLeap.Options();
+        options.appId = APP_ID;
+        options.clientKey = APP_ID_KEY;
+        options.serverRegion = MaxLeap.REGION_CN;
+        MaxLeap.initialize(this, options);
         SpHelper.init(this, "banbanle_global");
     }
 

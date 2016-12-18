@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,16 +22,21 @@ import com.maxleap.MLFileManager;
 import com.maxleap.MLObject;
 import com.maxleap.MLQuery;
 import com.maxleap.MLQueryManager;
+import com.maxleap.MLUser;
 import com.maxleap.SaveCallback;
 import com.maxleap.exception.MLException;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.sf.banbanle.ActivityHome;
+import com.sf.banbanle.FragmentHome;
+import com.sf.banbanle.LoginActivity;
 import com.sf.banbanle.R;
 import com.sf.banbanle.bean.UserInfoBean;
+import com.sf.banbanle.config.BBLConstant;
+import com.sf.banbanle.config.BBLMessageId;
 import com.sf.banbanle.config.GlobalInfo;
 import com.sf.loglib.L;
 import com.sf.utils.baseutil.BitmapHelp;
 import com.sf.utils.baseutil.SFToast;
+import com.sflib.reflection.core.SFBridgeManager;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -58,6 +64,8 @@ public class ActivityProfile extends BaseActivity {
     private TextView mNickNameTv;
     private TextView mAccountTv;
 
+    private Button mLogoutBt;
+
     private String mUrl = "";
     private MLObject mCurUserInfo;
 
@@ -73,6 +81,7 @@ public class ActivityProfile extends BaseActivity {
         mNickNameTv = (TextView) findViewById(R.id.nickName_tv);
         mAccountTv = (TextView) findViewById(R.id.account_tv);
 
+        mLogoutBt = (Button) findViewById(R.id.logout_bt);
         mPhotoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +106,16 @@ public class ActivityProfile extends BaseActivity {
                 startActivityForResult(intent, MODIFY_NICKNAME);
             }
         });
+        mLogoutBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SFBridgeManager.send(BBLMessageId.LOG_OUT);
+                logOut();
+                Intent intent = new Intent(ActivityProfile.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         getProfile();
     }
 
@@ -110,6 +129,11 @@ public class ActivityProfile extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         updateProfile();
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        MLUser.logOut();
+        GlobalInfo.getInstance().mLoginInfo.setValue(null, BBLConstant.LOGIN_INFO);
     }
 
     private void updateProfile() {
@@ -126,7 +150,7 @@ public class ActivityProfile extends BaseActivity {
                     SFToast.showToast(R.string.update_profile_success);
                     String channel = getChannel();
                     if (CHANNEL_REGISTER.equals(channel)) {
-                        Intent intent = new Intent(ActivityProfile.this, ActivityHome.class);
+                        Intent intent = new Intent(ActivityProfile.this, FragmentHome.class);
                         startActivity(intent);
                         finish();
                     } else {
@@ -174,7 +198,7 @@ public class ActivityProfile extends BaseActivity {
 
     private void upLoadFile(String filePath) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Bitmap bitmap=BitmapHelp.decodeFileInSize(filePath,mPhotoIv.getWidth(),mPhotoIv.getHeight());
+        Bitmap bitmap = BitmapHelp.decodeFileInSize(filePath, mPhotoIv.getWidth(), mPhotoIv.getHeight());
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte image[] = stream.toByteArray();
         final MLFile mlFile = new MLFile("photo.png", image);

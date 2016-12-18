@@ -1,10 +1,12 @@
 package com.sf.banbanle.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by mac on 16/12/4.
  */
 
-public class TaskBean {
+public class TaskBean implements Serializable{
     private String userName;
     private  int type;
     private String state;
@@ -13,6 +15,33 @@ public class TaskBean {
     private String url;
     private String id;
     private String nickName;
+    private String videoPath;
+    private long startTime;
+    private long endTime;
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getVideoPath() {
+        return videoPath;
+    }
+
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
+    }
 
     public String getNickName() {
         return nickName;

@@ -62,7 +62,7 @@ public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
 
     private void getAllFriendsInfo(List<String> users, boolean refresh) {
         MLQuery<MLObject> mlQuery = new MLQuery("UserInfo");
-        mlQuery.whereContainsAll("userName", users);
+        mlQuery.whereContainedIn("userName", users);
         mlQuery.setLimit(10);
         if (!refresh) {
             mlQuery.setSkip(getDataSize());
