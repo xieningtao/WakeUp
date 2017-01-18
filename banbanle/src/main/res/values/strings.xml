@@ -72,8 +72,8 @@
     <string name="progress_downloading">正在下载数据,请稍后...</string>
     <string name="progress_operating">正在执行操作,请稍后...</string>
 
-    <string name="main_menu_task">任务</string>
-    <string name="main_menu_profile">我的信息</string>
+    <string name="main_menu_task">消息提醒</string>
+    <string name="main_menu_profile">反馈</string>
     <string name="main_menu_setting">设置</string>
     <string name="main_menu_version">版本信息</string>
 </resources>

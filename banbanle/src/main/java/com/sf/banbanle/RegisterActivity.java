@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.basesmartframe.baseui.BaseActivity;
 import com.maxleap.MLDataManager;
@@ -28,7 +30,7 @@ import com.sflib.CustomView.baseview.EditTextClearDroidView;
  * Created by NetEase on 2016/11/29 0029.
  */
 
-public class RegisterActivity extends BaseActivity {
+public class RegisterActivity extends BaseBBLActivity {
     private EditTextClearDroidView mUserName;
     private EditTextClearDroidView mPwd;
 
@@ -40,6 +42,25 @@ public class RegisterActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ny_register_activity);
         initial();
+    }
+
+    @Override
+    protected void onCustomActionBarCreated(View rootView) {
+        rootView.setBackgroundColor(getResources().getColor(R.color.actionbar_blue));
+        ImageView iconIv = (ImageView) rootView.findViewById(R.id.icon_action_iv);
+        iconIv.setImageResource(R.drawable.back_icon);
+        iconIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        TextView titleTv = (TextView) rootView.findViewById(R.id.txt_action_tv);
+        titleTv.setText("注册");
+        ImageView plusIv = (ImageView) rootView.findViewById(R.id.plus_iv);
+        plusIv.setVisibility(View.GONE);
+        TextView finishTv = (TextView) rootView.findViewById(R.id.action_right_tv);
+        finishTv.setVisibility(View.GONE);
     }
 
     private void initial() {

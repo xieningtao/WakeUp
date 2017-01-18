@@ -23,6 +23,7 @@ import com.sf.banbanle.config.BBLConstant;
 import com.sf.banbanle.config.BBLMessageId;
 import com.sf.banbanle.config.GlobalInfo;
 import com.sf.banbanle.task.ActivityTaskDetail;
+import com.sf.utils.baseutil.UnitHelp;
 import com.sflib.reflection.core.SFIntegerMessage;
 import com.sflib.reflection.core.ThreadId;
 
@@ -33,7 +34,7 @@ import java.util.List;
  * Created by NetEase on 2016/12/1 0001.
  */
 
-public class FragmentAlarmHome extends BasePullListFragment<TaskBean> {
+public class FragmentAlarmHome extends BaseBBLPullListFragment<TaskBean> {
     private int mIndex;
 
     @Override
@@ -131,7 +132,6 @@ public class FragmentAlarmHome extends BasePullListFragment<TaskBean> {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mIndex = getFragmentIndex();
         super.onViewCreated(view, savedInstanceState);
-//        chatLogin();
     }
 
     private void chatLogin() {

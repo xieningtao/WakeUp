@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@drawable/item_click_selector"
         android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        >
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="8dp">
 
         <com.basesmartframe.bitmap.rounddrawable.RoundedImageView
             android:id="@+id/photo_iv"
@@ -22,8 +22,7 @@
             android:scaleType="center"
             android:src="@drawable/app_icon"
             app:riv_corner_radius="25dp"
-            app:riv_oval="true"
-            />
+            app:riv_oval="true" />
 
         <TextView
             android:id="@+id/title_tv"
@@ -31,8 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/photo_iv"
             android:layout_marginLeft="12dp"
-            android:layout_toRightOf="@id/photo_iv"
-            />
+            android:layout_toRightOf="@id/photo_iv" />
 
         <TextView
             android:id="@+id/content_tv"
@@ -40,7 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/photo_iv"
             android:layout_marginLeft="12dp"
-            android:layout_toRightOf="@id/photo_iv"
-            />
+            android:layout_toRightOf="@id/photo_iv" />
     </RelativeLayout>
 </RelativeLayout>

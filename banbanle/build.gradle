@@ -73,4 +73,6 @@ dependencies {
     compile 'com.sf.core:pull_refresh_lib:1.0.0@aar'
     compile 'com.sf.core:http_client:1.0.0@aar'
     compile 'com.sf.core:sfchat_lib:1.0.0@aar'
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
+    compile 'com.umeng:fb:5.0.0'
 }

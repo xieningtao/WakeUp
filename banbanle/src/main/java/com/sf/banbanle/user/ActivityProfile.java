@@ -2,6 +2,7 @@ package com.sf.banbanle.user;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -15,6 +16,10 @@ import com.basesmartframe.baseui.BaseActivity;
 import com.basesmartframe.pickphoto.ActivityFragmentContainer;
 import com.basesmartframe.pickphoto.ImageBean;
 import com.basesmartframe.pickphoto.PickPhotosFragment;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.maxleap.GetCallback;
 import com.maxleap.MLDataManager;
 import com.maxleap.MLFile;
@@ -26,6 +31,7 @@ import com.maxleap.MLUser;
 import com.maxleap.SaveCallback;
 import com.maxleap.exception.MLException;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sf.banbanle.BaseBBLActivity;
 import com.sf.banbanle.FragmentHome;
 import com.sf.banbanle.LoginActivity;
 import com.sf.banbanle.R;
@@ -45,7 +51,7 @@ import java.util.List;
  * Created by mac on 16/12/4.
  */
 
-public class ActivityProfile extends BaseActivity {
+public class ActivityProfile extends BaseBBLActivity {
     public static final int GET_PHOTO_REQUEST = 102;
 
     public static final int MODIFY_NICKNAME = 103;
@@ -68,6 +74,11 @@ public class ActivityProfile extends BaseActivity {
 
     private String mUrl = "";
     private MLObject mCurUserInfo;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,19 +128,36 @@ public class ActivityProfile extends BaseActivity {
             }
         });
         getProfile();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_add, menu);
-        return true;
+    protected void onCustomActionBarCreated(View rootView) {
+        rootView.setBackgroundColor(getResources().getColor(R.color.actionbar_blue));
+        ImageView iconIv = (ImageView) rootView.findViewById(R.id.icon_action_iv);
+        iconIv.setImageResource(R.drawable.back_icon);
+        iconIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        TextView titleTv = (TextView) rootView.findViewById(R.id.txt_action_tv);
+        titleTv.setText("个人中心");
+        ImageView plusIv = (ImageView) rootView.findViewById(R.id.plus_iv);
+        plusIv.setVisibility(View.GONE);
+        TextView finishTv = (TextView) rootView.findViewById(R.id.action_right_tv);
+        finishTv.setText("完成");
+        finishTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateProfile();
+            }
+        });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        updateProfile();
-        return super.onOptionsItemSelected(item);
-    }
 
     private void logOut() {
         MLUser.logOut();
@@ -249,5 +277,41 @@ public class ActivityProfile extends BaseActivity {
             return intent.getStringExtra(CHANNEL_ACTIVITY);
         }
         return "";
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("ActivityProfile Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 }

@@ -14,7 +14,7 @@
 
             <size android:width="40dp" android:height="40dp"></size>
             <corners android:bottomLeftRadius="20dp" android:topLeftRadius="20dp"/>
-            <solid android:color="@color/lb_grey"></solid>
+            <solid android:color="@color/actionbar_blue"></solid>
         </shape>
     </item>
 

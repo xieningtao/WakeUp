@@ -43,51 +43,30 @@ import java.util.List;
  * Created by mac on 16/12/18.
  */
 
-public class NewActivityHome extends BaseActivity implements AdapterView.OnItemClickListener {
+public class NewActivityHome extends BaseBBLActivity implements AdapterView.OnItemClickListener {
 
     private DrawerLayout mDrawer;
     private ListView mLeftDrawerLv;
     private View mLeftDrawerView;
     private ImageView mPhotoIv;
 
-    private final int mIcon[] = {R.drawable.app_icon, R.drawable.profile_icon, R.drawable.setting_icon, R.drawable.version_icon};
+    private final int mIcon[] = {R.drawable.message_icon, R.drawable.profile_icon, R.drawable.setting_icon, R.drawable.version_icon};
     private final int mContent[] = {R.string.main_menu_task, R.string.main_menu_profile, R.string.main_menu_setting, R.string.main_menu_version};
 
     private List<Fragment> mFragments = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
-        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getActionBar().setCustomView(R.layout.action_bar_item);
-        View rootView = getActionBar().getCustomView();
-        rootView.setBackgroundColor(getResources().getColor(R.color.actionbar_blue));
-        ImageView iconIv = (ImageView) rootView.findViewById(R.id.icon_action_iv);
-        iconIv.setImageResource(R.drawable.home_menu_icon);
-        ImageView plusIv = (ImageView) rootView.findViewById(R.id.plus_iv);
+
         mDrawer = (DrawerLayout) findViewById(R.id.content_dl);
         mLeftDrawerLv = (ListView) findViewById(R.id.left_drawer);
         mLeftDrawerView = findViewById(R.id.left_drawer_rl);
         mPhotoIv = (ImageView) findViewById(R.id.photo_iv);
 
-        plusIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(NewActivityHome.this, ActivityEditContent.class);
-                startActivity(intent);
-            }
-        });
-        iconIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mDrawer.isDrawerOpen(mLeftDrawerView)) {
-                    mDrawer.closeDrawer(mLeftDrawerView);
-                } else {
-                    mDrawer.openDrawer(mLeftDrawerView);
-                }
-            }
-        });
+
         mPhotoIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,9 +90,41 @@ public class NewActivityHome extends BaseActivity implements AdapterView.OnItemC
         loadPhoto();
     }
 
+    @Override
+    protected void onCustomActionBarCreated(View rootView) {
+        rootView.setBackgroundColor(getResources().getColor(R.color.actionbar_blue));
+        ImageView iconIv = (ImageView) rootView.findViewById(R.id.icon_action_iv);
+        iconIv.setImageResource(R.drawable.home_menu_icon);
+        ImageView plusIv = (ImageView) rootView.findViewById(R.id.plus_iv);
+        rootView.findViewById(R.id.action_right_tv).setVisibility(View.GONE);
+        plusIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(NewActivityHome.this, ActivityEditContent.class);
+                startActivity(intent);
+            }
+        });
+        iconIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDrawer.isDrawerOpen(mLeftDrawerView)) {
+                    mDrawer.closeDrawer(mLeftDrawerView);
+                } else {
+                    mDrawer.openDrawer(mLeftDrawerView);
+                }
+            }
+        });
+
+        TextView titleTv = (TextView) rootView.findViewById(R.id.txt_action_tv);
+        titleTv.setText("帮帮乐");
+    }
+
+
     private void loadPhoto() {
         UserInfoBean userInfoBean = GlobalInfo.getInstance().mInfoBean.getValue();
-        ImageLoader.getInstance().displayImage("http://" + userInfoBean.getUrl(), mPhotoIv);
+        if (userInfoBean != null) {
+            ImageLoader.getInstance().displayImage("http://" + userInfoBean.getUrl(), mPhotoIv);
+        }
     }
 
     @Override

@@ -83,6 +83,7 @@ public class ActivityTaskDetail extends BaseActivity {
                     return;
                 }
                 mDialog.setLoadingText(R.string.progress_operating);
+                mDialog.show();
                 if (BBLConstant.CREATOR.equals(mChannelFrom)) {
                     removeTask();
                 } else {
@@ -107,8 +108,14 @@ public class ActivityTaskDetail extends BaseActivity {
                 } else {
                     state = BBLConstant.ACCEPT;
                 }
-                if(!TextUtils.isEmpty(state)) {
-                    updateTaskState(state);
+                if (!TextUtils.isEmpty(state)) {
+                    if (NetWorkManagerUtil.isNetworkAvailable()) {
+                        updateTaskState(state);
+                        mDialog.setLoadingText(R.string.progress_loading);
+                        mDialog.show();
+                    } else {
+                        SFToast.showToast(R.string.net_unavailable);
+                    }
                 }
             }
         });
@@ -123,6 +130,7 @@ public class ActivityTaskDetail extends BaseActivity {
         if (NetWorkManagerUtil.isNetworkAvailable()) {
             getTaskDetail();
             mDialog.setLoadingText(R.string.progress_loading);
+            mDialog.show();
         } else {
             SFToast.showToast(R.string.net_unavailable);
         }
@@ -145,9 +153,6 @@ public class ActivityTaskDetail extends BaseActivity {
             }
         });
     }
-
-
-
 
 
     private void notifyMsgOwner(String state, String taskTitle) {

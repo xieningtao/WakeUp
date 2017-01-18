@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.sf.banbanle.R;
@@ -16,8 +17,12 @@ public class SFProgressDialog extends Dialog {
     private TextView mLoadingTv;
 
     public SFProgressDialog(Context context) {
-        super(context);
+        super(context, R.style.progress_dialog);
         initView();
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        getWindow().setAttributes(lp);
     }
 
     private void initView() {

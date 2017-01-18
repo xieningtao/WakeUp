@@ -3,7 +3,9 @@ package com.sf.banbanle.user;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
@@ -17,10 +19,12 @@ import com.maxleap.MLQuery;
 import com.maxleap.MLQueryManager;
 import com.maxleap.exception.MLException;
 import com.nostra13.universalimageloader.utils.L;
+import com.sf.banbanle.BaseBBLPullListFragment;
 import com.sf.banbanle.R;
 import com.sf.banbanle.bean.LoginInfo;
 import com.sf.banbanle.bean.UserInfoBean;
 import com.sf.banbanle.config.GlobalInfo;
+import com.sf.utils.baseutil.UnitHelp;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,9 +35,15 @@ import java.util.Set;
  * Created by mac on 16/12/4.
  */
 
-public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
+public class FragmentFriendsList extends BaseBBLPullListFragment<UserInfoBean> {
 
     private CheckableAdapter mCheckAdapter;
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
 
     @Override
     protected boolean onRefresh() {
@@ -52,7 +62,7 @@ public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
                     getAllFriendsInfo(users, true);
                 } else {
                     L.e(TAG, "friend relation exception: " + e);
-                    finishRefreshOrLoading(null,false);
+                    finishRefreshOrLoading(null, false);
                 }
             }
         });
@@ -119,7 +129,7 @@ public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
 
     @Override
     protected void bindView(BaseAdapterHelper baseAdapterHelper, int i, UserInfoBean userInfoBean) {
-        baseAdapterHelper.setImageBuilder(R.id.photo_iv, "http://"+userInfoBean.getUrl());
+        baseAdapterHelper.setImageBuilder(R.id.photo_iv, "http://" + userInfoBean.getUrl());
         baseAdapterHelper.setText(R.id.nickName_tv, userInfoBean.getNickName());
         baseAdapterHelper.setText(R.id.userName_tv, userInfoBean.getUserName());
     }
@@ -151,7 +161,7 @@ public class FragmentFriendsList extends BasePullListFragment<UserInfoBean> {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==ActivityFriendsList.ADD_USER_REQUEST&&resultCode== Activity.RESULT_OK){
+        if (requestCode == ActivityFriendsList.ADD_USER_REQUEST && resultCode == Activity.RESULT_OK) {
             getPullToRefreshListView().setRefreshing(true);
         }
     }

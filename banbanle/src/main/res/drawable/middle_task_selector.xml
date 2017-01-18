@@ -12,7 +12,7 @@
         <shape android:shape="rectangle">
 
             <size android:width="40dp" android:height="40dp"></size>
-            <solid android:color="@color/lb_grey"></solid>
+            <solid android:color="@color/actionbar_blue"></solid>
         </shape>
     </item>
 

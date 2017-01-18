@@ -121,7 +121,7 @@ public class LoginActivity extends BaseActivity {
                     userInfoBean.setNickName(nickName);
                     userInfoBean.setObjectId(mlObject.getObjectId());
                     GlobalInfo.getInstance().mInfoBean.setValue(userInfoBean);
-                    Intent intent = new Intent(LoginActivity.this, FragmentHome.class);
+                    Intent intent = new Intent(LoginActivity.this, NewActivityHome.class);
                     startActivity(intent);
                     finish();
                 } else {

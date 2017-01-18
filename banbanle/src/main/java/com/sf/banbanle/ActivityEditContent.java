@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.basesmartframe.baseui.BaseActivity;
@@ -51,7 +52,7 @@ import java.util.List;
  * Created by NetEase on 2016/12/1 0001.
  */
 
-public class ActivityEditContent extends BaseActivity {
+public class ActivityEditContent extends BaseBBLActivity {
     private EditTextClearDroidView mContent, mTitle;
     private TextView mUserListTv;
     private Button mAddUserBt;
@@ -130,6 +131,48 @@ public class ActivityEditContent extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onCustomActionBarCreated(View rootView) {
+        rootView.setBackgroundColor(getResources().getColor(R.color.actionbar_blue));
+        ImageView iconIv = (ImageView) rootView.findViewById(R.id.icon_action_iv);
+        iconIv.setImageResource(R.drawable.back_icon);
+        iconIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        TextView titleTv = (TextView) rootView.findViewById(R.id.txt_action_tv);
+        titleTv.setText("任务编辑页");
+        ImageView plusIv = (ImageView) rootView.findViewById(R.id.plus_iv);
+        plusIv.setVisibility(View.GONE);
+        TextView finishTv = (TextView) rootView.findViewById(R.id.action_right_tv);
+        finishTv.setText("完成");
+        finishTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(mTitle.getEditText().getText())) {
+                    SFToast.showToast(R.string.task_title_tips);
+                    return;
+                }
+                if (TextUtils.isEmpty(mContent.getEditText().getText())) {
+                    SFToast.showToast(R.string.task_content_tips);
+                    return;
+                }
+
+                if (!NetWorkManagerUtil.isNetworkAvailable()) {
+                    SFToast.showToast(R.string.net_unavailable);
+                    return;
+                }
+                String title = mTitle.getEditText().getText().toString();
+                String content = mContent.getEditText().getText().toString();
+                addTask(title, content, mUserList.get(0));
+            }
+        });
+
+    }
+
+
     private void fillViewWithData() {
         mTitle.getEditText().setText(mTaskBean.getTitle());
         mContent.getEditText().setText(mTaskBean.getContent());
@@ -176,38 +219,6 @@ public class ActivityEditContent extends BaseActivity {
         String content = year + "年" + month + "月" + day + "日 " + mWeekStr[week - 1] + " " + hourMinute;
         long time = calendar.getTimeInMillis();
         return new TimeBean(time, content);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.edit, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case 0:
-                if (TextUtils.isEmpty(mTitle.getEditText().getText())) {
-                    SFToast.showToast(R.string.task_title_tips);
-                    return true;
-                }
-                if (TextUtils.isEmpty(mContent.getEditText().getText())) {
-                    SFToast.showToast(R.string.task_content_tips);
-                    return true;
-                }
-
-                if (!NetWorkManagerUtil.isNetworkAvailable()) {
-                    SFToast.showToast(R.string.net_unavailable);
-                    return true;
-                }
-                String title = mTitle.getEditText().getText().toString();
-                String content = mContent.getEditText().getText().toString();
-                addTask(title, content, mUserList.get(0));
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void addTask(final String title, final String content, final UserInfoBean userInfoBean) {
@@ -304,14 +315,14 @@ public class ActivityEditContent extends BaseActivity {
             notification.put("open_type", 2);
             Intent intent = new Intent(ActivityEditContent.this, ActivityTaskDetail.class);
             intent.putExtra(ActivityTaskDetail.TASK_ID, taskId);
-            intent.putExtra(BBLConstant.TO_TASK_DETAIL_CHANNEL,BBLConstant.ASSIGN);
+            intent.putExtra(BBLConstant.TO_TASK_DETAIL_CHANNEL, BBLConstant.ASSIGN);
             String url = intent.toURI();
             notification.put("pkg_content", url);
             JSONObject jsonCustormCont = new JSONObject();
             jsonCustormCont.put("taskId", taskId); //自定义内容，key-value
             jsonCustormCont.put("startTime", startTime);
             jsonCustormCont.put("endTime", endTime);
-            jsonCustormCont.put("videoPath","");
+            jsonCustormCont.put("videoPath", "");
             notification.put("custom_content", jsonCustormCont);
         } catch (Exception e) {
             L.error(TAG, "pushToSingleDevice exception: " + e);

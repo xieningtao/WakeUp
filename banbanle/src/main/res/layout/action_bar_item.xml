@@ -15,9 +15,11 @@
         android:id="@+id/txt_action_tv"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="4dp"
-        android:layout_toRightOf="@id/icon_action_iv"
-        android:gravity="center_vertical" />
+        android:gravity="center"
+        android:textColor="@color/text_black"
+        android:textSize="16sp" />
 
     <ImageView
         android:id="@+id/plus_iv"
@@ -28,4 +30,16 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:src="@drawable/add_task_icon" />
+
+    <TextView
+        android:id="@+id/action_right_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/rectangle_click_bk"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textColor="@color/text_black"
+        android:textSize="16sp" />
 </RelativeLayout>
